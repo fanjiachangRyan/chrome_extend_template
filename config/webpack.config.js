@@ -10,7 +10,7 @@ const InlineChunkHtmlPlugin = require('react-dev-utils/InlineChunkHtmlPlugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
-const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
+const {WebpackManifestPlugin} = require('webpack-manifest-plugin');
 const InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin');
 const WorkboxWebpackPlugin = require('workbox-webpack-plugin');
 const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin');
@@ -39,7 +39,7 @@ const reactRefreshWebpackPluginRuntimeEntry = require.resolve(
 const babelRuntimeEntry = require.resolve('babel-preset-react-app');
 const babelRuntimeEntryHelpers = require.resolve(
   '@babel/runtime/helpers/esm/assertThisInitialized',
-  { paths: [babelRuntimeEntry] }
+  {paths: [babelRuntimeEntry]}
 );
 const babelRuntimeRegenerator = require.resolve('@babel/runtime/regenerator', {
   paths: [babelRuntimeEntry],
@@ -117,7 +117,7 @@ module.exports = function (webpackEnv) {
         // css is located in `static/css`, use '../../' to locate index.html folder
         // in production `paths.publicUrlOrPath` can be a relative path
         options: paths.publicUrlOrPath.startsWith('.')
-          ? { publicPath: '../../' }
+          ? {publicPath: '../../'}
           : {},
       },
       {
@@ -205,7 +205,7 @@ module.exports = function (webpackEnv) {
     // entry: paths.appIndexJs,
     entry: {
       main: isEnvDevelopment && !shouldUseReactRefresh
-        ? [webpackDevClientEntry,paths.appIndexJs] : paths.appIndexJs,
+        ? [webpackDevClientEntry, paths.appIndexJs] : paths.appIndexJs,
       content: './src/content/index.tsx',
       background: './src/background/index.tsx'
     },
@@ -397,7 +397,7 @@ module.exports = function (webpackEnv) {
                     prettier: false,
                     svgo: false,
                     svgoConfig: {
-                      plugins: [{ removeViewBox: false }],
+                      plugins: [{removeViewBox: false}],
                     },
                     titleProp: true,
                     ref: true,
@@ -460,7 +460,7 @@ module.exports = function (webpackEnv) {
                 presets: [
                   [
                     require.resolve('babel-preset-react-app/dependencies'),
-                    { helpers: true },
+                    {helpers: true},
                   ],
                 ],
                 cacheDirectory: true,
@@ -510,12 +510,12 @@ module.exports = function (webpackEnv) {
               exclude: lessModuleRegex,
               use: getStyleLoaders(
                 {
-                  importLoaders: 3,
+                  importLoaders: 2,
                   sourceMap: isEnvProduction
                     ? shouldUseSourceMap
                     : isEnvDevelopment,
                   modules: {
-                    mode: 'icss',
+                    mode: 'local',
                   },
                 },
                 'less-loader'
@@ -523,17 +523,15 @@ module.exports = function (webpackEnv) {
               sideEffects: true,
             },
             {
-              test:lessModuleRegex,
+              test: lessModuleRegex,
               use: getStyleLoaders(
                 {
-                  importLoaders: 3,
+                  importLoaders: 2,
                   sourceMap: isEnvProduction
                     ? shouldUseSourceMap
                     : isEnvDevelopment,
-                  modules: {
-                    mode: 'local',
-                    getLocalIdent: getCSSModuleLocalIdent,
-                  },
+                  modules: true,
+                  getLocalIdent: getCSSModuleLocalIdent,
                 },
                 'less-loader'
               ),
@@ -701,14 +699,14 @@ module.exports = function (webpackEnv) {
           // '../cra-template-typescript/template/src/App.tsx'
           // otherwise.
           include: [
-            { file: '../**/src/**/*.{ts,tsx}' },
-            { file: '**/src/**/*.{ts,tsx}' },
+            {file: '../**/src/**/*.{ts,tsx}'},
+            {file: '**/src/**/*.{ts,tsx}'},
           ],
           exclude: [
-            { file: '**/src/**/__tests__/**' },
-            { file: '**/src/**/?(*.){spec|test}.*' },
-            { file: '**/src/setupProxy.*' },
-            { file: '**/src/setupTests.*' },
+            {file: '**/src/**/__tests__/**'},
+            {file: '**/src/**/?(*.){spec|test}.*'},
+            {file: '**/src/setupProxy.*'},
+            {file: '**/src/setupTests.*'},
           ],
         },
         logger: {

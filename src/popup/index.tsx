@@ -2,9 +2,10 @@ import {BrowserRouter, Navigate} from "react-router-dom";
 import {Route, Routes} from "react-router";
 import Home from "@/popup/pages/home";
 import Account from "@/popup/pages/account";
+import styles from './index.less'
 
 const Router = () => {
-    return <div style={{width: '200px', height: '400px'}}>
+    return <div style={{width: '200px', height: '400px'}} className={styles.container}>
         <div>header</div>
         <div>
             <BrowserRouter>
