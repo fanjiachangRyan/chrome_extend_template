@@ -5,7 +5,7 @@ import Account from "@/popup/pages/account";
 import styles from './index.less'
 
 const Router = () => {
-    return <div style={{width: '200px', height: '400px'}} className={styles.container}>
+    return <div className={styles.container}>
         <div>header</div>
         <div>
             <BrowserRouter>
