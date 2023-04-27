@@ -12,7 +12,14 @@ const Home = () => {
         }}>
             navigation to Account page
         </Button>
-
+        <Button onClick={() => {
+           const a = document.createElement('a')
+            a.href = '/options.html'
+            a.innerHTML = '跳转'
+            a.click()
+        }}>
+            open tab options
+        </Button>
     </div>
 }
 export default Home
