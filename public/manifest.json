@@ -1,7 +1,7 @@
 {
-  "name": "Chrome插件V3",
+  "name": "Extensions",
   "version": "1.0",
-  "description": "React开发chrome插件V3 Demo。",
+  "description": "Extensions",
   "manifest_version": 3,
   "background": {
     "service_worker": "static/js/background.js"
@@ -38,7 +38,7 @@
       "48": "/images/app.png",
       "128": "/images/app.png"
     },
-    "default_title": "React CRX MV3"
+    "default_title": "Extensions"
   },
   "icons": {
     "16": "/images/app.png",
