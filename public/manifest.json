@@ -14,8 +14,7 @@
       "run_at": "document_end"
     }
   ],
-  "permissions": ["storage","declarativeContent"],
-  "host_permissions":[],
+  "permissions": ["storage","declarativeContent", "tabs"],
   "web_accessible_resources": [
     {
       "resources": [ "/images/app.png" ],

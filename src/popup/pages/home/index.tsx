@@ -1,22 +1,24 @@
 import styles from './index.less'
 import {Button, message} from "antd";
 import {useNavigate} from "react-router";
+import {useEffect} from "react";
 
 const Home = () => {
-    const navigate = useNavigate()
 
+    useEffect(() => {
+        if (chrome?.runtime) {
+            chrome.runtime.connect()
+        }
+    }, [])
+    // const navigate = useNavigate()
     return <div className={styles.home}>
-        <Button onClick={() => message.info('hello world!')}>hello world!</Button>
-        <Button onClick={() => {
-            navigate('/account', {state: {name: '123'}})
-        }}>
-            navigation to Account page
-        </Button>
-        <Button onClick={() => {
-           const a = document.createElement('a')
-            a.href = '/options.html'
-            a.innerHTML = '跳转'
-            a.click()
+        <Button onClick={async () => {
+            const tabs = await chrome.tabs.query({active: true, currentWindow: true})
+            tabs.forEach((tab: any) => {
+                chrome.tabs.sendMessage(tab.id, {key: 'connect', account: '铁柱'}, (res: any) => {
+                    console.log('receive:::>', res)
+                })
+            })
         }}>
             open tab options
         </Button>

@@ -1,5 +1,5 @@
 'use strict';
-
+const CopyPlugin = require("copy-webpack-plugin");
 const fs = require('fs');
 const path = require('path');
 const webpack = require('webpack');
@@ -43,7 +43,7 @@ const babelRuntimeRegenerator = require.resolve('@babel/runtime/regenerator', {
   paths: [babelRuntimeEntry],
 });
 
-const shouldInlineRuntimeChunk = process.env.INLINE_RUNTIME_CHUNK !== 'false';
+// const shouldInlineRuntimeChunk = process.env.INLINE_RUNTIME_CHUNK !== 'false';
 
 const emitErrorsAsWarnings = process.env.ESLINT_NO_DEV_ERRORS === 'true';
 const disableESLintPlugin = process.env.DISABLE_ESLINT_PLUGIN === 'true';
@@ -158,6 +158,7 @@ module.exports = function (webpackEnv) {
         }
       );
     }
+
     return loaders;
   };
 
@@ -426,6 +427,32 @@ module.exports = function (webpackEnv) {
       ].filter(Boolean),
     },
     plugins: [
+      new CopyPlugin({
+        patterns: [
+          {
+            context: paths.appPublic,
+            from: '**/*',
+            to: path.join(__dirname, '../build'),
+            transform: function (content, path) {
+              if(path.includes('manifest.json')) {
+                return Buffer.from(
+                  JSON.stringify({
+                    // version: process.env.npm_package_version,
+                    // description: process.env.npm_package_description,
+                    ...JSON.parse(content.toString()),
+                  })
+                );
+              }
+              return content;
+            },
+            globOptions: {
+              dot: true,
+              gitignore: true,
+              ignore: ['**/*.html'], // 过滤 html 文件
+            },
+          },
+        ],
+      }),
       /** 多页面输出改造 */
       ...[
         {template: 'public/index.html',  name: 'index', filename: 'main'},
@@ -488,9 +515,9 @@ module.exports = function (webpackEnv) {
       //       : undefined
       //   )
       // ),
-      isEnvProduction &&
-      shouldInlineRuntimeChunk &&
-      new InlineChunkHtmlPlugin(HtmlWebpackPlugin, [/runtime-.+[.]js/]),
+      // isEnvProduction &&
+      // shouldInlineRuntimeChunk &&
+      // new InlineChunkHtmlPlugin(HtmlWebpackPlugin, [/runtime-.+[.]js/]),
       new InterpolateHtmlPlugin(HtmlWebpackPlugin, env.raw),
       new ModuleNotFoundPlugin(paths.appPath),
       new webpack.DefinePlugin(env.stringified),
