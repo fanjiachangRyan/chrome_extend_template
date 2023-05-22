@@ -1,0 +1,49 @@
+.subject {
+  color: white;
+  font-size: 18px;
+}
+
+.description {
+  margin-top: 10px;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.mnemonics {
+  width: 100%;
+  position: relative;
+  margin-top: 20px;
+  overflow: hidden;
+  padding: 5px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+
+  &_item {
+    height: 30px;
+    width: 26%;
+    border-radius: 4px;
+    color: black;
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+}
+
+.steps {
+  width: 100%;
+  margin: 0 0 40px;
+}
+
+.confirm {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 50px;
+  width: calc(100% - 40px);
+  height: 40px;
+  background: rgb(231, 83, 83);
+  border-radius: 6px;
+  color: white;
+}

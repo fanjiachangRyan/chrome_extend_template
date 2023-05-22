@@ -1,5 +1,6 @@
 'use strict';
 const CopyPlugin = require("copy-webpack-plugin");
+const NodePolyfillPlugin = require('node-polyfill-webpack-plugin')
 const fs = require('fs');
 const path = require('path');
 const webpack = require('webpack');
@@ -83,8 +84,7 @@ module.exports = function (webpackEnv) {
   const isEnvDevelopment = webpackEnv === 'development';
   const isEnvProduction = webpackEnv === 'production';
 
-  const isEnvProductionProfile =
-    isEnvProduction && process.argv.includes('--profile');
+  const isEnvProductionProfile = isEnvProduction && process.argv.includes('--profile');
 
   const env = getClientEnvironment(paths.publicUrlOrPath.slice(0, -1));
 
@@ -177,7 +177,8 @@ module.exports = function (webpackEnv) {
       content: './src/content/index',
       background: './src/background/index',
       options: './src/options/index',
-      pannel: './src/pannel/index'
+      pannel: './src/pannel/index',
+      injectedScript: './src/content/injected-script'
     },
     output: {
       path: paths.appBuild,
@@ -209,13 +210,14 @@ module.exports = function (webpackEnv) {
       },
     },
     infrastructureLogging: {
-      level: 'none',
+      level: 'info',
     },
     optimization: {
       minimize: isEnvProduction,
       minimizer: [
         // This is only used in production mode
         new TerserPlugin({
+          extractComments: false,
           terserOptions: {
             parse: {
               ecma: 8,
@@ -239,13 +241,15 @@ module.exports = function (webpackEnv) {
           },
         }),
         new CssMinimizerPlugin(),
-      ],
-      runtimeChunk: false
+      ]
     },
     resolve: {
-      modules: ['node_modules', paths.appNodeModules].concat(
-        modules.additionalModulePaths || []
-      ),
+      fallback: {
+        crypto: require.resolve('crypto-browserify'),
+        // stream: require.resolve("stream-browserify"),
+        // console: require.resolve('console-browserify')
+      },
+      modules: ['node_modules', paths.appNodeModules].concat(modules.additionalModulePaths || []),
       extensions: paths.moduleFileExtensions
         .map(ext => `.${ext}`)
         .filter(ext => useTypeScript || !ext.includes('ts')),
@@ -256,17 +260,17 @@ module.exports = function (webpackEnv) {
           'scheduler/tracing': 'scheduler/tracing-profiling',
         }),
         ...(modules.webpackAliases || {}),
-        '@': path.join(__dirname, '..', 'src'),
+        '@': paths.appSrc,
       },
       plugins: [
-        new ModuleScopePlugin(paths.appSrc, [
-          paths.appPackageJson,
-          reactRefreshRuntimeEntry,
-          reactRefreshWebpackPluginRuntimeEntry,
-          babelRuntimeEntry,
-          babelRuntimeEntryHelpers,
-          babelRuntimeRegenerator,
-        ]),
+        // new ModuleScopePlugin(paths.appSrc, [
+        //   paths.appPackageJson,
+        //   reactRefreshRuntimeEntry,
+        //   reactRefreshWebpackPluginRuntimeEntry,
+        //   babelRuntimeEntry,
+        //   babelRuntimeEntryHelpers,
+        //   babelRuntimeRegenerator,
+        // ]),
       ],
     },
     module: {
@@ -427,6 +431,7 @@ module.exports = function (webpackEnv) {
       ].filter(Boolean),
     },
     plugins: [
+      new NodePolyfillPlugin(),
       new CopyPlugin({
         patterns: [
           {

@@ -1,5 +1,7 @@
 html, body {
   position: relative;
+  overflow: hidden;
+  background: rgb(23, 32, 49);
 }
 
 * {

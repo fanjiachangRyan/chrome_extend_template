@@ -1,48 +1,36 @@
 {
-  "name": "Extensions",
-  "version": "1.0",
-  "description": "Extensions",
   "manifest_version": 3,
+  "name": "ME",
+  "version": "1.0",
+  "description": "ME extension",
+  "action": {
+    "default_popup": "index.html",
+    "default_icon": "/images/app.png",
+    "default_title": "ME Wallet"
+  },
   "background": {
     "service_worker": "static/js/background.js"
   },
   "content_scripts": [
     {
-      "matches": ["<all_urls>"],
-      "css": ["static/css/main.css"],
-      "js": ["static/js/content.js"],
-      "run_at": "document_end"
+      "matches": [
+        "http://*/*",
+        "https://*/*",
+        "<all_urls>",
+        "http://localhost:8000/",
+        "http://localhost:8000/*"
+      ],
+      "js": [
+        "static/js/content.js"
+      ]
     }
   ],
-  "permissions": ["storage","declarativeContent", "tabs"],
+  "permissions": ["storage"],
+  "icons": {"128": "/images/app.png"},
   "web_accessible_resources": [
     {
-      "resources": [ "/images/app.png" ],
-      "matches": ["<all_urls>"]
-    },
-    {
-      "resources": [ "insert.js" ],
+      "resources": ["/images/app.png", "/static/js/injectedScript.js"],
       "matches": ["<all_urls>"]
     }
-  ],
-  "options_ui": {
-    "page": "./options.html",
-    "open_in_tab": true
-  },
-  "action": {
-    "default_popup": "index.html",
-    "default_icon": {
-      "16": "/images/app.png",
-      "32": "/images/app.png",
-      "48": "/images/app.png",
-      "128": "/images/app.png"
-    },
-    "default_title": "Extensions"
-  },
-  "icons": {
-    "16": "/images/app.png",
-    "32": "/images/app.png",
-    "48": "/images/app.png",
-    "128": "/images/app.png"
-  }
+  ]
 }

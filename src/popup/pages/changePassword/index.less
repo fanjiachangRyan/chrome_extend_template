@@ -1,0 +1,33 @@
+.confirm {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 50px;
+  width: calc(100% - 40px);
+  height: 40px;
+  background: rgb(231, 83, 83);
+  border-radius: 6px;
+  color: white;
+}
+
+.password {
+  margin-top: 20px;
+  background: transparent;
+  border-color: white;
+  border-radius: 6px;
+
+  :global {
+    .ant-input {
+      background: transparent;
+      color: white;
+    }
+
+    .ant-input::-webkit-input-placeholder {
+      color: rgba(255, 255, 255, 0.6) !important;
+    }
+
+    .anticon {
+      color: white !important;
+    }
+  }
+}

@@ -1,21 +1,36 @@
-if (process.env.NODE_ENV === 'development') {
-    const eventSource = new EventSource(
-        `http://${process.env.REACT_APP__HOST__}:${process.env.REACT_APP__PORT__}/reload/`
-    );
-    console.log('--- 开始监听更新消息 ---');
-    eventSource.addEventListener('content_changed_reload', async ({ data }) => {
-        const [tab] = await chrome.tabs.query({
-            active: true,
-            lastFocusedWindow: true,
-        });
-        const tabId = tab.id || 0;
-        console.log(`tabId is ${tabId}`);
-        await chrome.tabs.sendMessage(tabId, {
-            type: 'window.location.reload',
-        });
-        console.log('chrome extension will reload', data);
-        chrome.runtime.reload();
-    });
-}
+import {connect, getCurrentAccount} from "@/api";
+
+chrome.runtime.onMessage.addListener(async (request, _sender, sendResponse) => {
+  if (request.value === 'requestConnect') {
+    // const account: any = await getCurrentAccount()
+    //
+    // if (!account?.address) {
+    //   // chrome.windows.create({
+    //   //   url: `${chrome.runtime.getURL('index.html')}#/welcome`,
+    //   //   type: 'popup',
+    //   // })
+    //   sendResponse({msg: `打开创建窗口`})
+    //
+    //   return
+    // }
+
+    //
+    chrome.windows.create({url: `${chrome.runtime.getURL('index.html')}`, type: 'popup'})
+    // sendResponse({msg: `打开解锁窗口`})
+
+    // const { closeTime, autoLockTime, isLock } = await storage.get(['closeTime', 'autoLockTime', 'isLock'])
+    // const now = new Date().getTime()
+    //
+    // if (now - closeTime > autoLockTime * 60 * 1000 || isLock) {
+    //   chrome.windows.create({ url: `${chrome.runtime.getURL('index.html')}/unlock`, type: 'popup'})
+    //   sendResponse({ msg: '打开解锁窗口' })
+    //   return
+    // }
+
+    // connect()
+    sendResponse({msg: '成功授权'})
+    return
+  }
+})
 
 export {}

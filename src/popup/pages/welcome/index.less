@@ -1,0 +1,65 @@
+.logo {
+  width: 100%;
+  height: 30%;
+  margin: 20px auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  :global {
+    .anticon {
+      font-size: 70px;
+      color: white;
+    }
+  }
+}
+
+.welcome {
+  text-align: center;
+  color: white;
+  font-size: 30px;
+  margin: 30px 0;
+}
+
+.buttons {
+  position: absolute;
+  left: 0;
+  bottom: 50px;
+  width: 100%;
+
+  &_create {
+    width: calc(100% - 40px);
+    height: 40px;
+    margin: 30px 20px 0;
+    background: rgb(231, 83, 83);
+    border-radius: 6px;
+    color: white;
+  }
+
+  &_create:active {
+    color: rgba(255, 255, 255, 0.7) !important;
+    border-color: rgba(255, 255, 255, 0.7) !important;
+  }
+
+  &_create:hover {
+    color: rgba(255, 255, 255, 0.7) !important;
+    border-color: rgba(255, 255, 255, 0.7) !important;
+  }
+
+  &_import {
+    width: 100%;
+    margin-top: 20px;
+    text-decoration: underline;
+    color: rgb(231, 83, 83);
+  }
+
+  &_import:active {
+    color: rgba(231, 83, 83, 0.7) !important;
+  }
+
+  &_import:hover {
+    color: rgba(231, 83, 83, 0.7) !important;
+  }
+}
+
+
