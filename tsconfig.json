@@ -4,9 +4,14 @@
     "lib": [
       "dom",
       "dom.iterable",
-      "esnext"
+      "esnext",
+      "es6"
     ],
-    "types": ["chrome", "node"],
+    "noImplicitAny": false,
+    "types": [
+      "chrome",
+      "node"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -22,12 +27,19 @@
     "jsx": "react-jsx",
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": [
+        "./src/*"
+      ]
     }
   },
   "include": [
     "src",
-    "typing.d.ts",
+    "src/store",
+    "src/store/**/*.ts"
+  ],
+  "exclude": [
+    "src/store/**",
+    "src/store/**/*",
     "src/api/messages/proto.js"
   ]
 }

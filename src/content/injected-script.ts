@@ -1,11 +1,11 @@
 // 注入脚本
+import {DOMAINS} from "@/config/define";
+
 declare const window: any
 
 function init() {
     const me = {
         getKey: function () {
-            // window.postMessgae('connect..............................', window.location.origin)
-            // console.log('getKey.................')
             // 发送连接的消息
             window.postMessage(
                 {
@@ -19,9 +19,9 @@ function init() {
                 // 监听请求授权消息
                 window.addEventListener(
                     'message',
-                    async (event: MessageEvent) => {
-                        if (event.data.form === 'content' && event.data.value === 'requestConnectConfirm') {
-                            // console.log('inejectedScript收到确认的信息')
+                    (event: MessageEvent) => {
+                        if (DOMAINS.includes(event.origin) && event.data.form === 'content' && event.data.value === 'requestConnectConfirm') {
+                            console.log('injected script收到确认的信息')
                             resolve({
                                 name: event.data.account.accountName,
                                 // address: '我是地址',
@@ -36,7 +36,7 @@ function init() {
                 window.addEventListener(
                     'message',
                     async (event: MessageEvent) => {
-                        if (event.data.form === 'content' && event.data.value === 'requestConnectCancel') {
+                        if (DOMAINS.includes(event.origin) && event.data.form === 'content' && event.data.value === 'requestConnectCancel') {
                             // console.log('inejectedScript收到取消的信息')
                             reject('cancel connect')
                         }
@@ -63,8 +63,7 @@ function init() {
                 window.addEventListener(
                     'message',
                     async (event: MessageEvent) => {
-                        if (event.data.form === 'content' && event.data.value === 'disconnectConfirm') {
-                            // console.log('inejectedScript收到成功断开连接的信息')
+                        if (DOMAINS.includes(event.origin) && event.data.form === 'content' && event.data.value === 'disconnectConfirm') {
                             resolve('断开连接')
                         }
                     },
@@ -88,7 +87,7 @@ function init() {
                 window.addEventListener(
                     'message',
                     async (event: MessageEvent) => {
-                        if (event.data.form === 'content' && event.data.value === 'sendTx') {
+                        if (DOMAINS.includes(event.origin) && event.data.form === 'content' && event.data.value === 'sendTx') {
                             // console.log('inejectedScript收到交易结果', event.data)
                             if (event.data.response?.tx_response?.code === 0 || event.data.response?.code === 0) {
                                 resolve(event.data.response)
@@ -119,7 +118,7 @@ function init() {
                 window.addEventListener(
                     'message',
                     async (event: MessageEvent) => {
-                        if (event.data.form === 'content' && event.data.value === 'createSend') {
+                        if (DOMAINS.includes(event.origin) && event.data.form === 'content' && event.data.value === 'createSend') {
                             // console.log('inejectedScript收到交易结果')
                             resolve(event.data.response)
                         }

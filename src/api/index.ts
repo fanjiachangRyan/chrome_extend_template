@@ -7,6 +7,7 @@ import {storage, checkData} from "@/api/utils";
 import { fromString} from 'uint8arrays/from-string'
 import { toString } from 'uint8arrays/to-string'
 import http from './request'
+import localHttp from './localRequest'
 export const ME = async () => {
   const {wallet_end_url} = await getParseNetwork()
   return instanceME(wallet_end_url)
@@ -143,7 +144,6 @@ export const addAccount = async ({mnemonic = '', priv}: any) => {
       })
     })
   } catch (e) {
-    console.log('e==>', e)
     return Promise.reject(e)
   }
 }
@@ -201,9 +201,8 @@ export const setAccount = async (data: any) => {
 }
 
 export const connect = async () => {
-  const account: any = await getAccount()
+  const account: any = await getCurrentAccount()
   const tabs: any[] = await chrome.tabs.query({ active: true })
-  // console.log('tabs::', tabs)
   tabs.forEach((tab: any) => {
     chrome.tabs.sendMessage(
         tab.id,
@@ -212,31 +211,7 @@ export const connect = async () => {
           value: 'requestConnectConfirm',
           account: account,
         },
-        async (result) => {
-          let { connectList } = await storage.get(['connectList'])
-          connectList = connectList || []
-
-          let current = connectList.find((item: any) => {
-            return item.origin && item.origin === origin
-          })
-
-          if (!current) {
-            current = { status: 'connected', origin }
-            connectList.push(current)
-          } else {
-            current.status = 'connected'
-          }
-
-          await storage.set({ connectList: connectList })
-          await storage.set({ closeTime: new Date().getTime() })
-          await storage.get(['connectList']).then(({ connectList }) => {
-            console.log('onConfirm connectList:::', connectList)
-          })
-
-          setTimeout(() => {
-            window.close()
-          }, 300)
-        }
+        async (result) => {}
     )
   })
 }
@@ -284,7 +259,6 @@ export const getCurrentAccount = async () => {
   })
 }
 
-
 export const getPassword = async () => {
  return new Promise(async (resolve: any, reject: any) => {
    try {
@@ -300,3 +274,43 @@ export const getPassword = async () => {
 export const getBalanceByAddress = async (address: string) => {
   return await http.get(`/cosmos/bank/v1beta1/balances/${address}`)
 }
+export const getFixedDeposit = async (address: string, query_type = 'ALL_STATE') => {
+  return await http.get(`/cosmos/staking/v1beta1/fixed_deposit_by_acct/${address}/ALL_STATE`)
+}
+
+export const getDelegationAmount = async (address: string) => {
+  return await http.get(`/cosmos/staking/v1beta1/delegation/${address}`)
+}
+
+export const getDepositAnnualRateList = async () => {
+  return await http.get(`/cosmos/staking/v1beta1/fixed_deposit_interest_rate`)
+}
+
+export const getTransMessageByAccount = async (address: string, page_number = 1) => {
+  return await localHttp.post(`/me/transaction/messageByAccount`, {account: address, page_number})
+}
+
+export const getTransInfoByHash = async (hash: string) => {
+  return await http.get(`/cosmos/tx/v1beta1/txs/${hash}`)
+}
+
+export const getRewardByAddress = async (address: string) => {
+  return await http.get(`/cosmos/distribution/v1beta1/rewards/${address}`)
+}
+export const getKycInfo = async (address: string) => {
+  return await http.get(`/cosmos/staking/v1beta1/kyc/${address}`)
+}
+
+export const getRegionInfo = async (id: string) => {
+  return await http.get(`/cosmos/staking/v1beta1/region/${id}`)
+}
+
+export const getFixDepositDetail = async ({id = '', address = ''}: any) => {
+  return await http.get(`/cosmos/staking/v1beta1/fixed_deposit/${id}?address=${address}`)
+}
+
+
+export const getDelegateRate = async () => {
+  return await localHttp.get(`/me/delegation/getParams`)
+}
+

@@ -44,8 +44,8 @@ const Setting = () => {
             <p>Share</p>
           </div>
           <div className={styles.settingItem_go}>
-            <span>{cutStr(currentAccount.address ?? '')}</span>
-            <RightOutlined/>
+            {/*<span>{cutStr(currentAccount.address ?? '')}</span>*/}
+            {/*<RightOutlined/>*/}
           </div>
         </div>
         <div className={styles.settingItem}>
@@ -54,8 +54,8 @@ const Setting = () => {
             <p>Network</p>
           </div>
           <div className={styles.settingItem_go}>
-            <span>{cutStr(currentAccount.address ?? '')}</span>
-            <RightOutlined/>
+            {/*<span>{cutStr(currentAccount.address ?? '')}</span>*/}
+            {/*<RightOutlined/>*/}
           </div>
         </div>
         <div className={styles.settingItem}>
@@ -64,8 +64,8 @@ const Setting = () => {
             <p>Auto-lock</p>
           </div>
           <div className={styles.settingItem_go}>
-            <span>{cutStr(currentAccount.address ?? '')}</span>
-            <RightOutlined/>
+            {/*<span>{cutStr(currentAccount.address ?? '')}</span>*/}
+            {/*<RightOutlined/>*/}
           </div>
         </div>
         <div className={styles.settingItem}>
@@ -74,16 +74,11 @@ const Setting = () => {
             <p>Language</p>
           </div>
           <div className={styles.settingItem_go}>
-            <span>{cutStr(currentAccount.address ?? '')}</span>
-            <RightOutlined/>
+            {/*<span>{cutStr(currentAccount.address ?? '')}</span>*/}
+            {/*<RightOutlined/>*/}
           </div>
         </div>
         <Button className={styles.lockButton} onClick={() => navigator('/unlock')}>Lock Wallet</Button>
-        <Button className={styles.lockButton} onClick={async () => {
-          await storage.remove('currentAccount')
-
-          navigator('/welcome')
-        }}>Logout</Button>
       </Layout>
   )
 }

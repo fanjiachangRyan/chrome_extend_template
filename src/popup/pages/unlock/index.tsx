@@ -1,9 +1,9 @@
 import styles from './index.less'
 import {Button, Input, message} from "antd";
-import {MediumOutlined} from '@ant-design/icons'
+import logo from '@/assets/images/app.png'
 import Layout from "@/popup/components/layout";
 import {useState} from "react";
-import {getPassword} from "@/api";
+import {connect, getPassword} from "@/api";
 import {useNavigate} from "react-router";
 import {useRequest} from "ahooks";
 
@@ -13,14 +13,14 @@ const Unlock = () => {
 
   const {run, loading} = useRequest(getPassword, {
     manual: true,
-    onSuccess: (res: any) => {
+    onSuccess: async (res: any) => {
       if (res !== pw) {
         message.error('The password is invalid', 3)
         return
       }
 
       message.success('unlock success!', 1)
-
+      await connect()
       navigator('/main/home')
     },
     onError: (e: any) => {
@@ -31,7 +31,7 @@ const Unlock = () => {
   return (
       <Layout visibleBack>
         <div className={styles.logo}>
-          <MediumOutlined/>
+          <img src={logo} alt=""/>
         </div>
         <p className={styles.welcome}>Welcome back</p>
         <div className={styles.input}>

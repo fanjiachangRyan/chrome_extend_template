@@ -5,16 +5,18 @@ import {useState} from "react";
 import Layout from "@/popup/components/layout";
 import {getCurrentAccount} from "@/api";
 import {useRequest} from "ahooks";
+import logo from '@/assets/images/app.png'
 import {
-  MediumOutlined,
   AppstoreOutlined,
   HomeOutlined,
   CreditCardOutlined,
   AppstoreAddOutlined,
-  PicCenterOutlined
+  PicCenterOutlined,
+  CopyFilled
 } from "@ant-design/icons";
 import {cutStr} from "@/api/utils";
 import {useLocation, Outlet} from 'react-router'
+import copy from "@/config/copy";
 
 const routes: any[] = [
   {
@@ -46,7 +48,6 @@ const Main = () => {
     ready: true,
     refreshDeps: [],
     onSuccess: (res: any) => {
-      console.log('res==>', res)
       setCurrentAccount(() => res)
     }
   })
@@ -56,16 +57,19 @@ const Main = () => {
         <div className={styles.body}>
           <div className={styles.body_header}>
             <div className={styles.body_header_logo}>
-              <MediumOutlined style={{color: 'white', fontSize: 30}}/>
+              <img className={styles.body_header_logo_img} src={logo} alt=""/>
               <div className={styles.body_header_logo_info}>
                 <p>{currentAccount.accountName}</p>
-                <p>{cutStr(currentAccount.address)}</p>
+                <p>{cutStr(currentAccount.address)} <CopyFilled
+                    style={{color: 'white', marginLeft: 5, fontSize: 12, cursor: 'pointer'}}
+                    onClick={() => copy(currentAccount.address)}/></p>
               </div>
             </div>
-            <Button style={{margin: '4px 0'}} type={"link"}><AppstoreOutlined style={{fontSize: 25, color: 'rgb(231, 83, 83)'}} onClick={() => navigator('/setting')}/></Button>
+            <Button style={{margin: '4px 0'}} type={"link"}><AppstoreOutlined
+                style={{fontSize: 25, color: 'rgb(231, 83, 83)'}} onClick={() => navigator('/setting')}/></Button>
           </div>
           <div className={styles.body_container}>
-            <Outlet />
+            <Outlet/>
           </div>
           <div className={styles.body_tabs}>
             {

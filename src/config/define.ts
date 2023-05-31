@@ -12,6 +12,8 @@ export interface INetwork {
 
 export const DOMAINS: string[] = [
   'http://localhost:8000',
+  'http://192.168.0.207',
+
 ]
 // 网络列表
 export const S_NETWORK_LIST = 'network-list'
@@ -35,7 +37,7 @@ export interface ParseNetworkResult {
 export const BROWSER_PATH = 'explorer'
 
 // 后端端口
-export const BACKEND_PORT = '8080'
+export const BACKEND_PORT = '8081'
 
 // 链端端口
 export const CHAIN_END_PORT = '1317'
@@ -48,4 +50,12 @@ export const DEV_NET: Network = {
   name: 'Devnet',
   url: 'http://192.168.0.207',
 }
+
+export const addr = `http://192.168.0.207:26657`
+
+// todo 200000
+export const gas_limit = 400000 // 2e5
+export const gas_price = 0.0005
+
+export const gas_fee = gas_limit * gas_price
 

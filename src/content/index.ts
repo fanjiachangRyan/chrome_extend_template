@@ -15,8 +15,6 @@ scriptElement.remove()
 window.addEventListener(
     'message',
     (event: MessageEvent) => {
-      console.log('event===>', event)
-
       if (DOMAINS.includes(event.origin) && event.data.from === 'injectedScript' && event.data.value === 'requestConnect') {
         try {
           chrome.runtime.sendMessage(
@@ -39,7 +37,7 @@ window.addEventListener(
 // 监听确认授权消息
 chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
   if (request.from === 'popup' && request.value === 'requestConnectConfirm') {
-
+    console.log('content收到确认授权')
     window.postMessage(
         {
           value: request.value,
@@ -49,7 +47,7 @@ chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
         window.location.origin
     )
 
-    return sendResponse({msg: '收到确认授权'})
+    return sendResponse({msg: 'content收到确认授权'})
   } else if (request.from === 'popup' && request.value === 'requestConnectCancel') {
     window.postMessage(
         {
@@ -99,14 +97,14 @@ chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
 window.addEventListener(
     'message',
     async (event: MessageEvent) => {
-      if (event.data.from === 'injectedScript' && event.data.value === 'requestDisconnect') {
+      if (DOMAINS.includes(event.origin) && event.data.from === 'injectedScript' && event.data.value === 'requestDisconnect') {
         chrome.runtime.sendMessage(
             {
               value: event.data.value,
               origin: event.origin,
             },
             (res) => {
-
+              console.log('请求断开链接===>', res)
             }
         )
       }
@@ -201,12 +199,6 @@ chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
 
     return sendResponse({msg: '收到普通交易结果'})
   }
-})
-
-chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
-
-  console.log('test ==>', request)
-  sendResponse('text')
 })
 
 export {}

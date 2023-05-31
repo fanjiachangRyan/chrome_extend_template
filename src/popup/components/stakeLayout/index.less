@@ -1,0 +1,45 @@
+.stakeLayout {
+  height: 100%;
+  padding: 0 20px;
+  overflow: hidden;
+  position: relative;
+  border: 1px solid transparent;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: column;
+
+  &_title {
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    color: rgba(255,255,255,0.7);
+    margin: 20px 0 15px;
+  }
+
+  &_container {
+    width: 100%;
+    flex-grow: 1;
+    overflow: hidden;
+    overflow-y: auto;
+    position: relative;
+  }
+
+  &_container::-webkit-scrollbar {
+    width: 3px;
+    background: rgba(255,255,255,0.3);
+  }
+
+  &_container::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.6);
+    border-radius: 3px;
+  }
+
+  &_footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}

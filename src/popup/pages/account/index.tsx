@@ -14,6 +14,7 @@ const Account = () => {
   const [password, setPassword] = useState<string>('')
   const [form] = Form.useForm()
   const [isOpen, setIsOpen] = useState<boolean>(false)
+  const [handleType, setHandleType] = useState<string>('manage')
 
   useRequest(() => getCurrentAccount(), {
     ready: true,
@@ -29,7 +30,8 @@ const Account = () => {
         <div className={styles.accountHeader}>
           <MediumOutlined style={{color: 'white', fontSize: 40}}/>
           <div className={styles.accountHeader_info}>
-            <p className={styles.accountHeader_info_accountName}>{currentAccount.accountName}<EditOutlined /></p>
+            <p className={styles.accountHeader_info_accountName}>{currentAccount.accountName}<EditOutlined
+                style={{cursor: "pointer"}} onClick={() => navigator('/changeAccountName')}/></p>
             <p className={styles.accountHeader_info_accountAddress}>{cutStr(currentAccount.address)}</p>
           </div>
         </div>
@@ -41,13 +43,19 @@ const Account = () => {
           <p>Change Password</p>
           <RightOutlined/>
         </div>
-        <div className={styles.accountItem}>
+        <div className={styles.accountItem} onClick={() => {
+          setHandleType('manage')
+          setIsOpen(true)
+        }}>
           <p>Manage account</p>
-          <RightOutlined/>
+          <div/>
         </div>
-        <div className={styles.accountItem} onClick={() => setIsOpen(true)}>
+        <div className={styles.accountItem} onClick={() => {
+          setHandleType('remove')
+          setIsOpen(true)
+        }}>
           <p>Remove account</p>
-          <div />
+          <div/>
         </div>
         <Modal
             wrapClassName={styles.modal}
@@ -60,6 +68,11 @@ const Account = () => {
           <Form
               form={form}
               onFinish={async (values: any) => {
+                if (handleType === 'manage') {
+                  navigator('/manageAccount')
+                  return
+                }
+
                 const {pw} = await storage.get(['pw'])
 
                 if (values.password !== pw) {
@@ -74,8 +87,10 @@ const Account = () => {
                     await storage.set({currentAccount: {...accountList[0]}})
                     setCurrentAccount(() => accountList[0])
                     await storage.set({accountList: [...accountList]})
-
-                    return message.success('Remove success!')
+                    message.success('Remove success!')
+                    setIsOpen(false)
+                    navigator('/main/home')
+                    return
                   }
 
                   await storage.set({pw: ''})
@@ -83,6 +98,7 @@ const Account = () => {
                   await storage.set({accountList: []})
 
                   setIsOpen(false)
+                  setPassword('')
                   navigator('/welcome')
                 })
               }}

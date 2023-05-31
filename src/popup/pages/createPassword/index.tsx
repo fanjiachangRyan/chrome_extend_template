@@ -24,11 +24,7 @@ const CreatePassword = () => {
         <Form
             form={form}
             initialValues={{pw: '', pwConfirm: '', isAgree: false}}
-            onValuesChange={(val: any, values: any) => {
-              console.log(val, values)
-            }}
             onFinish={(values: any) => {
-              console.log(values)
               if (!values.isAgree) {
                 message.warning('Need to agree to the terms of service')
 

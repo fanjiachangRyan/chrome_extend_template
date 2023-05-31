@@ -20,9 +20,6 @@ const Navigator = (props: NavigatorProps) => {
           <LeftOutlined/>
         </Button>
         <p className={styles.navigator_text}>{props.title}</p>
-        <Button type={"link"} onClick={() => {
-          storage.clear()
-        }}>clear storage</Button>
       </div>
   )
 }

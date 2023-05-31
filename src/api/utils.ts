@@ -1,3 +1,7 @@
+import {getCurrentAccount} from "@/api/index";
+import {DirectSecp256k1HdWallet, DirectSecp256k1Wallet} from '@cosmjs/proto-signing'
+import {PREFIX} from "@/config/define";
+
 const customStorage = {
   get: function (keys: string[], callback: (v: any) => void) {
     const values: any = {}
@@ -55,7 +59,7 @@ export const checkData = (list: any[]) => {
 
 
 export const getCurrentTab = async () => {
-  const queryOptions = { active: true, currentWindow: true }
+  const queryOptions = {active: true, currentWindow: true}
   const [tab] = await chrome.tabs.query(queryOptions)
   return tab
 }
@@ -76,15 +80,22 @@ interface FormatCountByDenomFn {
 
 }
 
-export const formatCountByDenom: FormatCountByDenomFn = (denom = '', amount: string, isInt = false, amountCutLength = 6) => {
+export const formatCountByDenom: FormatCountByDenomFn = (denom = '', amount: any, isInt = false, amountCutLength = 6) => {
   const firstChar = denom.slice(0, 1) || ''
   let newAmount = '0'
+  if (!amount || amount == '0') return {denom, amount: '0'}
+
+  let _amount: any = typeof amount === 'string' ? amount : `${amount}`
+
   if (firstChar.toUpperCase() === 'U') {
-    newAmount = `${amount.slice(0, amount.length - amountCutLength)}`
-    const amountLastStr = amount.slice(amount.length - amountCutLength, amount.length)
-    const dotNumber = parseInt(amountLastStr)
-    if (dotNumber > 0 && !isInt) {
-      newAmount += ('.' + `${dotNumber / (10 ** amountCutLength)}`.split('.')[1])
+    _amount = `${_amount * 1 /  Math.pow(10, amountCutLength)}`
+
+    const amountArr = _amount.split('.')
+
+    if (amountArr[1]) {
+      newAmount = `${amountArr[0]}.${amountArr[1].slice(0, 6)}`
+    } else {
+      newAmount = _amount
     }
 
     return {
@@ -94,11 +105,32 @@ export const formatCountByDenom: FormatCountByDenomFn = (denom = '', amount: str
   }
 
   if (amountCutLength > 6) {
-    newAmount = `${amount.slice(0, amount.length - (amountCutLength - 6))}`
+    newAmount = `${_amount.slice(0, _amount.length - (amountCutLength - 6))}`
   }
 
   return {
     denom: denom.toUpperCase(),
     amount: newAmount
   }
+}
+
+export const getWallet = async () => {
+  // const mnemonic = 'champion session feature cry pretty middle hamster dinner snap grunt glass hire rent notable spoon bachelor gorilla fire salt dice riot brisk hair flag'
+  const account: any = await getCurrentAccount()
+  if (account.mnemonic) {
+    return DirectSecp256k1HdWallet.fromMnemonic(account.mnemonic, {prefix: PREFIX})
+  } else if (account.privKey) {
+    return DirectSecp256k1Wallet.fromKey(account.privKey, PREFIX)
+  } else {
+    throw new Error('The account has no mnemonics and no private key')
+  }
+}
+
+export const dealType = (type: string) => {
+  if (!type) {
+    return ''
+  }
+  const typeArr = type.split('.')
+  const typeName = typeArr[typeArr.length - 1].replace(/^Msg/, '')
+  return typeName
 }

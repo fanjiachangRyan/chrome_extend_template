@@ -77,4 +77,3 @@ export const parseNetwork = ({name, url}: Network): ParseNetworkResult => {
   }
 }
 
-

@@ -20,6 +20,19 @@ import Setting from "@/popup/pages/setting";
 import ChangePassword from "@/popup/pages/changePassword";
 import SwitchAccount from "@/popup/pages/switchAccount";
 import AddAccount from "@/popup/pages/addAccount";
+import ManageAccount from "@/popup/pages/manageAccount";
+import ChangeAccountName from "@/popup/pages/changeAccountName";
+import Stake from "@/popup/pages/stake";
+import TransactionDetail from "@/popup/pages/transactionDetail";
+import Send from "@/popup/pages/send";
+import StakeDetail from "@/popup/pages/stakeDetail";
+import StakeFlexibleDetail from "@/popup/pages/stakeFlexibleDetail";
+import StakeList from "@/popup/pages/stakeList";
+import StakeFixed from "@/popup/pages/stakeFixed";
+import StakeFlexible from "@/popup/pages/stakeFlexible";
+import UnStakeFlexible from "@/popup/pages/unStakeFlexible";
+import StakeResult from "@/popup/pages/stakeResult";
+import UnStakeResult from "@/popup/pages/unStakeResult";
 
 const Router = () => {
   return (
@@ -51,6 +64,18 @@ const Router = () => {
               <Route path="/changePassword" element={<ChangePassword/>}/>
               <Route path="/switchAccount" element={<SwitchAccount/>}/>
               <Route path="/addAccount" element={<AddAccount/>}/>
+              <Route path="/manageAccount" element={<ManageAccount/>}/>
+              <Route path="/changeAccountName" element={<ChangeAccountName/>}/>
+              <Route path="/stake" element={<Stake />}/>
+              <Route path={'/transactionDetail'} element={<TransactionDetail />}/>
+              <Route path={'/send'} element={<Send />}/>
+              <Route path={'/stakeList'} element={<StakeList />}/>
+              <Route path={'/stakeFixed'} element={<StakeFixed />}/>
+              <Route path={'/stakeFlexible'} element={<StakeFlexible />}/>
+              <Route path={'/stakeDetail'} element={<StakeDetail />}/>
+              <Route path={'/unStakeFlexible'} element={<UnStakeFlexible />}/>
+              <Route path={'/stakeResult'} element={<StakeResult />}/>
+              <Route path={'/unStakeResult'} element={<UnStakeResult />}/>
               <Route path="*" element={<NoMatch/>}/>
             </Routes>
           </HashRouter>

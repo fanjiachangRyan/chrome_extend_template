@@ -1,0 +1,71 @@
+.item {
+  background: rgba(255, 255, 255, .1);
+  border-radius: 6px;
+  backdrop-filter: blur(10px);
+  padding: 15px;
+  margin-top: 20px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  margin-bottom: 30px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.row:nth-last-child(1) {
+  margin-bottom: 0;
+}
+
+.subject {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.value {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.8);
+  display: flex;
+  align-items: flex-end;
+
+  span {
+    font-size: 14px;
+    margin-left: 5px;
+  }
+}
+
+.time {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.unStake {
+  width: 100%;
+  height: 40px;
+  margin-top: 30px;
+  background: rgb(231, 83, 83);
+  border-radius: 6px;
+  color: white;
+}
+
+.amount {
+  :global {
+    .ant-input {
+      background: transparent;
+      color: white;
+    }
+
+    .ant-input-number {
+      width: 100%;
+      background: transparent;
+      color: white;
+    }
+
+    .ant-input-number-input {
+      color: white;
+    }
+  }
+}
