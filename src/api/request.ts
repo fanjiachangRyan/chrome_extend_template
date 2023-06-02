@@ -1,11 +1,14 @@
 import axios from 'axios';
 import {CHAIN_END_PORT} from "@/config/define";
 
-
 const instance = axios.create({
-  baseURL: `http://192.168.0.207:${CHAIN_END_PORT}`,
+  baseURL: `http://192.168.0.207:1317`,
   timeout: 100000,
 });
+
+export const setHttpBaseUrl = (url) => {
+  instance.defaults.baseURL = `${url}:${CHAIN_END_PORT}`
+}
 
 instance.interceptors.request.use((config: any) => config);
 

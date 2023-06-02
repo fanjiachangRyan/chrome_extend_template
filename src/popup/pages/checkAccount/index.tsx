@@ -7,6 +7,7 @@ import {useRequest} from "ahooks";
 import {checkAccount} from "./utils";
 import {Spin} from 'antd';
 import {LoadingOutlined} from '@ant-design/icons'
+import logo from '@/assets/images/app.png'
 
 const antIcon = <LoadingOutlined style={{fontSize: 50, color: '#e75353'}} spin/>;
 
@@ -22,7 +23,7 @@ const CheckAccount = () => {
   return (
       <Layout visibleBack>
         <div className={styles.logo}>
-          <MediumOutlined/>
+          <img src={logo} alt=""/>
         </div>
         <div className={styles.spin}>
           <Spin indicator={antIcon}/>

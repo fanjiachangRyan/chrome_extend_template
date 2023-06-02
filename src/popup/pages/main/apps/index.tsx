@@ -3,7 +3,7 @@ const Apps = () => {
 
   return (
       <div className={styles.home}>
-        apps
+        {/*apps*/}
       </div>
   )
 }

@@ -21,7 +21,6 @@ function init() {
                     'message',
                     (event: MessageEvent) => {
                         if (DOMAINS.includes(event.origin) && event.data.form === 'content' && event.data.value === 'requestConnectConfirm') {
-                            console.log('injected script收到确认的信息')
                             resolve({
                                 name: event.data.account.accountName,
                                 // address: '我是地址',
@@ -37,7 +36,6 @@ function init() {
                     'message',
                     async (event: MessageEvent) => {
                         if (DOMAINS.includes(event.origin) && event.data.form === 'content' && event.data.value === 'requestConnectCancel') {
-                            // console.log('inejectedScript收到取消的信息')
                             reject('cancel connect')
                         }
                     },
@@ -49,7 +47,6 @@ function init() {
             return 1
         },
         disconnect: function () {
-            // console.log('inejectedScript收到断开连接的请求')
             return new Promise((resolve, reject) => {
                 // 发送断开连接的消息
                 window.postMessage(
@@ -74,7 +71,6 @@ function init() {
             })
         },
         sendTx: function (tx: any) {
-            // console.log('收到发起交易的消息')
             window.postMessage(
                 {
                     value: 'sendTx',
@@ -88,7 +84,6 @@ function init() {
                     'message',
                     async (event: MessageEvent) => {
                         if (DOMAINS.includes(event.origin) && event.data.form === 'content' && event.data.value === 'sendTx') {
-                            // console.log('inejectedScript收到交易结果', event.data)
                             if (event.data.response?.tx_response?.code === 0 || event.data.response?.code === 0) {
                                 resolve(event.data.response)
                             } else {
@@ -101,7 +96,6 @@ function init() {
             })
         },
         createSend: function (toAddress: string, amount: string, memo: string) {
-            // console.log('收到发起交易的消息')
             window.postMessage(
                 {
                     value: 'createSend',
@@ -119,7 +113,6 @@ function init() {
                     'message',
                     async (event: MessageEvent) => {
                         if (DOMAINS.includes(event.origin) && event.data.form === 'content' && event.data.value === 'createSend') {
-                            // console.log('inejectedScript收到交易结果')
                             resolve(event.data.response)
                         }
                     },

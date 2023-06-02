@@ -15,6 +15,10 @@ import {formatCountByDenom} from "@/api/utils";
 import app from '@/assets/images/app.png'
 import moment from "moment";
 
+const renderStake = () => {
+
+}
+
 const Stake = () => {
   const navigator = useNavigate()
   const [fixedDepositList, setFixedDepositList] = useState<any[]>([])
@@ -95,7 +99,11 @@ const Stake = () => {
                 <span>EARNED</span>
               </div>
               <div className={styles.staking_detail_count}>
-                <span>{formatCountByDenom('umec', `${(delegation?.balance?.amount || '0') * 1 + fixDeposit}`).amount} {formatCountByDenom('umec', `${(delegation?.balance?.amount || '0') * 1 + fixDeposit}`).denom}</span>
+                <span>{
+                  formatCountByDenom('umec', `${(delegation?.balance?.amount || '0') * 1 + fixDeposit}`).amount && formatCountByDenom('umec', `${(delegation?.balance?.amount || '0') * 1 + fixDeposit}`).amount != 0
+                      ? `${formatCountByDenom('umec', `${(delegation?.balance?.amount || '0') * 1 + fixDeposit}`).amount} ${formatCountByDenom('umec', `${(delegation?.balance?.amount || '0') * 1 + fixDeposit}`).denom}`
+                      : '0'
+                }</span>
                 <span>{formatCountByDenom(rewards.denom, rewards.amount || '0').amount} MEC</span>
               </div>
             </div>
@@ -114,7 +122,8 @@ const Stake = () => {
               const times = long > 0 ? `in ${day > 0 ? `${day} days` : ''} ${hour > 0 ? `${hour} hours` : ''} ${min > 0 ? `${min} mins` : ''}` : ''
 
               return (
-                  <div className={styles.staking} key={item.id} onClick={() => navigator('/stakeDetail', {state: {stakeId: item.id, type: 'fixed'}})}>
+                  <div className={styles.staking} key={item.id}
+                       onClick={() => navigator('/stakeDetail', {state: {stakeId: item.id, type: 'fixed'}})}>
                     <div className={styles.staking_fixedDetail}>
                       <div className={styles.staking_fixedDetail_info}>
                         <img src={app} alt=""/>

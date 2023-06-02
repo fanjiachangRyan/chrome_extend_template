@@ -59,7 +59,6 @@ export const getAccount = async (): Promise<any> => {
         // console.log('getAcount: ', data)
         resolve(data)
       } catch (error) {
-        console.error('getAccount:', error)
         resolve(account)
       }
     })
@@ -211,7 +210,9 @@ export const connect = async () => {
           value: 'requestConnectConfirm',
           account: account,
         },
-        async (result) => {}
+        async (result) => {
+          await storage.set({connectStatus: true})
+        }
     )
   })
 }

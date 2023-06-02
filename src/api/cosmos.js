@@ -9,7 +9,7 @@ export class Cosmos {
     this.url = url
     this.chainId = chainId
     this.path = "m/44'/118'/0'/0/0"
-    this.bech32MainPrefix = 'cosmos'
+    this.bech32MainPrefix = 'me'
   }
 
   // strength(128): 12 words, strength(256): 24 words

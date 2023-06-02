@@ -64,6 +64,23 @@ export const getCurrentTab = async () => {
   return tab
 }
 
+export const disconnect = async () => {
+  const account: any = await getCurrentAccount()
+  const tabs: any[] = await chrome.tabs.query({active: true})
+  tabs.forEach((tab: any) => {
+    chrome.tabs.sendMessage(
+        tab.id,
+        {
+          from: 'popup',
+          value: 'disconnect',
+          account: account,
+        },
+        () => {
+        }
+    )
+  })
+}
+
 export const cutStr = (val: string, startLength = 6, endLength = 6) => {
   if (val.length < startLength + endLength) return val;
 
@@ -77,7 +94,6 @@ interface FormatCountByDenomFn {
       isInt?: boolean,
       amountCutLength?: number,
   ): any
-
 }
 
 export const formatCountByDenom: FormatCountByDenomFn = (denom = '', amount: any, isInt = false, amountCutLength = 6) => {
@@ -88,7 +104,7 @@ export const formatCountByDenom: FormatCountByDenomFn = (denom = '', amount: any
   let _amount: any = typeof amount === 'string' ? amount : `${amount}`
 
   if (firstChar.toUpperCase() === 'U') {
-    _amount = `${_amount * 1 /  Math.pow(10, amountCutLength)}`
+    _amount = `${_amount * 1 / Math.pow(10, amountCutLength)}`
 
     const amountArr = _amount.split('.')
 

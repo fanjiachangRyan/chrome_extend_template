@@ -3,7 +3,7 @@ import {Button, Input, message} from "antd";
 import styles from './index.less'
 import {useState} from "react";
 import {useRequest} from "ahooks";
-import {addAccount} from "@/api";
+import {addAccount, connect} from "@/api";
 import {useNavigate} from "react-router";
 
 const PrivateKey = () => {
@@ -12,8 +12,9 @@ const PrivateKey = () => {
 
   const {run, loading} = useRequest(addAccount, {
     manual: true,
-    onSuccess: () => {
+    onSuccess: async () => {
       message.success('success', 2)
+      await connect()
       navigator('/main/home')
     },
     onError: (error: any) => {

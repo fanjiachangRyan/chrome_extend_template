@@ -3,7 +3,7 @@ const Library = () => {
 
   return (
       <div className={styles.home}>
-        library
+        {/*library*/}
       </div>
   )
 }

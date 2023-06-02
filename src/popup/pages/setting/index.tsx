@@ -8,16 +8,18 @@ import {
   LockOutlined,
   GlobalOutlined
 } from '@ant-design/icons'
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {useRequest} from "ahooks";
 import {getCurrentAccount} from "@/api";
-import {cutStr, storage} from "@/api/utils";
+import {cutStr, disconnect, storage} from "@/api/utils";
 import {Button} from "antd";
 import {useNavigate} from "react-router";
+import {ClientAddrInfoList, clientAddrList, ClientAddrType} from "@/config/define";
 
 const Setting = () => {
   const navigator = useNavigate()
   const [currentAccount, setCurrentAccount] = useState<any>({address: ''})
+  const [netType, setNetType] = useState<string>('Dev')
 
   useRequest(() => getCurrentAccount(), {
     ready: true,
@@ -25,6 +27,14 @@ const Setting = () => {
       setCurrentAccount(() => ({...(res ?? {})}))
     }
   })
+
+  useEffect(() => {
+    storage.get(['clientAddrType']).then(({clientAddrType = ClientAddrType.Dev}: any) => {
+      const netObject = ClientAddrInfoList.find((item: any) => item.value === clientAddrType) || 'Dev'
+
+      setNetType(netObject.subject)
+    })
+  }, [])
 
   return (
       <Layout title={'Wallet Settings'}>
@@ -40,32 +50,12 @@ const Setting = () => {
         </div>
         <div className={styles.settingItem}>
           <div className={styles.settingItem_itemName}>
-            <ShareAltOutlined/>
-            <p>Share</p>
-          </div>
-          <div className={styles.settingItem_go}>
-            {/*<span>{cutStr(currentAccount.address ?? '')}</span>*/}
-            {/*<RightOutlined/>*/}
-          </div>
-        </div>
-        <div className={styles.settingItem}>
-          <div className={styles.settingItem_itemName}>
             <FormatPainterOutlined/>
             <p>Network</p>
           </div>
-          <div className={styles.settingItem_go}>
-            {/*<span>{cutStr(currentAccount.address ?? '')}</span>*/}
-            {/*<RightOutlined/>*/}
-          </div>
-        </div>
-        <div className={styles.settingItem}>
-          <div className={styles.settingItem_itemName}>
-            <LockOutlined/>
-            <p>Auto-lock</p>
-          </div>
-          <div className={styles.settingItem_go}>
-            {/*<span>{cutStr(currentAccount.address ?? '')}</span>*/}
-            {/*<RightOutlined/>*/}
+          <div className={styles.settingItem_go} onClick={() => navigator('/netType')}>
+            <span>{netType}</span>
+            <RightOutlined/>
           </div>
         </div>
         <div className={styles.settingItem}>
@@ -78,7 +68,10 @@ const Setting = () => {
             {/*<RightOutlined/>*/}
           </div>
         </div>
-        <Button className={styles.lockButton} onClick={() => navigator('/unlock')}>Lock Wallet</Button>
+        <Button className={styles.lockButton} onClick={async () => {
+          await disconnect()
+          navigator('/unlock')
+        }}>Lock Wallet</Button>
       </Layout>
   )
 }

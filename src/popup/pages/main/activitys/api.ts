@@ -4,17 +4,17 @@ export const getTransInfo = (address: string, current: number) => {
   return new Promise(async (resolve, reject) => {
     try {
       const res: any = await getTransMessageByAccount(address, current)
-      const {data = []} = res ?? {}
+      const {data = [], amount = 0} = res ?? {}
       Promise.all(data.map(async (item: any) => {
         const transInfo: any = await getTransInfoByHash(item.transaction_hash)
 
-        return {
-          ...item,
-          transInfo
-        }
+        return transInfo
 
-      })).then((transInfoList: any) => {
-        resolve(transInfoList)
+      })).then((list: any) => {
+        resolve({
+          amount,
+          list
+        })
       })
     } catch (e) {
       console.log(e)

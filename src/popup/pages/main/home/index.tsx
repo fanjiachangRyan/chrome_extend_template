@@ -60,7 +60,7 @@ const Home = () => {
   const {run} = useRequest(getDelegationAmount, {
     manual: true,
     onSuccess: (res: any) => {
-      const {balance = {}} = res ?? {}
+      const {balance = {}} = res?.delegation_response ?? {}
 
       setDelegateAmount((prev: any) => `${prev * 1 + (balance.amount || 0) * 1}`)
     }

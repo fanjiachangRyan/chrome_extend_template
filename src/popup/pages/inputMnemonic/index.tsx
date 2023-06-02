@@ -3,7 +3,7 @@ import Steps from "@/popup/components/steps";
 import styles from './index.less'
 import {useState} from "react";
 import {useRequest} from "ahooks";
-import {addAccount, ME} from "@/api";
+import {addAccount, connect, ME} from "@/api";
 import {Button, Input, message} from "antd";
 import {useNavigate} from "react-router";
 
@@ -18,10 +18,12 @@ const Mnemonic = () => {
 
   const {run, loading} = useRequest(addAccount, {
     manual: true,
-    onSuccess: (account: any) => {
+    onSuccess:async (account: any) => {
       if (!account?.address) {
         return message.error('create error!')
       }
+
+      await connect()
       message.success('success', 2)
 
       navigator('/main/home')

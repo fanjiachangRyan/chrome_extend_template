@@ -48,3 +48,29 @@
     color: rgba(255,255,255,0.6);
   }
 }
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  :global {
+    .ant-pagination-item-link {
+      color: white!important;
+    }
+
+    .ant-pagination-item {
+      a {
+        color: rgba(255,255,255,0.8)!important;
+      }
+    }
+
+    .ant-pagination-item-active {
+      background-color: transparent!important;
+
+      a {
+        color: rgba(255,255,255,0.4)!important;
+      }
+    }
+  }
+}

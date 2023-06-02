@@ -1,4 +1,5 @@
 import {DOMAINS} from "@/config/define";
+import {storage} from "@/api/utils";
 
 declare const window: any
 
@@ -22,9 +23,7 @@ window.addEventListener(
                 value: event.data.value,
                 origin: event.origin,
               },
-              (res) => {
-                console.log('requestConnect response==>', res)
-              }
+              (res) => {}
           )
         } catch (error) {
           console.error('error::', error)
@@ -37,7 +36,6 @@ window.addEventListener(
 // 监听确认授权消息
 chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
   if (request.from === 'popup' && request.value === 'requestConnectConfirm') {
-    console.log('content收到确认授权')
     window.postMessage(
         {
           value: request.value,
@@ -46,7 +44,6 @@ chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
         },
         window.location.origin
     )
-
     return sendResponse({msg: 'content收到确认授权'})
   } else if (request.from === 'popup' && request.value === 'requestConnectCancel') {
     window.postMessage(
@@ -103,9 +100,7 @@ window.addEventListener(
               value: event.data.value,
               origin: event.origin,
             },
-            (res) => {
-              console.log('请求断开链接===>', res)
-            }
+            (res) => {}
         )
       }
     },
@@ -122,7 +117,7 @@ chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
         },
         window.location.origin
     )
-
+    storage.set({connectStatus: false})
     return sendResponse({msg: '收到确认断开'})
   }
 })
@@ -150,18 +145,14 @@ window.addEventListener(
 window.addEventListener(
     'message',
     async (event: MessageEvent) => {
-      // console.log('event::', event)
       if (event.data.from === 'injectedScript' && event.data.value === 'sendTx') {
-        // console.log('content收到发起其他交易的消息', event)
         chrome.runtime.sendMessage(
             {
               value: event.data.value,
               origin: event.origin,
               tx: event.data.tx,
             },
-            (res) => {
-              // console.log('其他交易请求', res)
-            }
+            (res) => {}
         )
       }
     },
@@ -171,7 +162,6 @@ window.addEventListener(
 // 监听其他交易结果
 chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
   if (request.from === 'popup' && request.value === 'sendTx') {
-    // console.log('content收到其他交易结果的消息', request)
     window.postMessage(
         {
           value: request.value,

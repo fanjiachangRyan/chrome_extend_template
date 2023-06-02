@@ -1,4 +1,4 @@
-import {addr, gas_fee, gas_limit, PREFIX} from "@/config/define";
+import {clientAddrList, gas_fee, gas_limit, getClientAddrType, PREFIX} from "@/config/define";
 import {txClient} from "@/store/cosmos.staking.v1beta1/module";
 import {getWallet} from "@/api/utils";
 
@@ -7,7 +7,8 @@ export const sendMsgStake = async ({amount, validatorAddress, memo}: any) => {
     const wallet = await getWallet()
 
     const [account] = await wallet.getAccounts()
-
+    const addrType:any = await getClientAddrType()
+    const addr = clientAddrList[addrType]
     const client = txClient( {signer: wallet, addr, prefix: PREFIX})
 
     const value: any = {

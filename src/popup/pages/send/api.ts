@@ -1,4 +1,4 @@
-import {addr, gas_fee, gas_limit, PREFIX} from "@/config/define";
+import {gas_fee, gas_limit, clientAddrList, getClientAddrType, PREFIX} from "@/config/define";
 import {txClient} from "@/store/cosmos.bank.v1beta1/module";
 import {getWallet} from "@/api/utils";
 
@@ -7,6 +7,9 @@ export const msgSend = async ({amount, toAddress, memo}: any) => {
     const wallet = await getWallet()
 
     const [account] = await wallet.getAccounts()
+
+    const addrType:any = await getClientAddrType()
+    const addr = clientAddrList[addrType]
 
     const client = txClient( {signer: wallet, addr, prefix: PREFIX})
     const value: any = {
