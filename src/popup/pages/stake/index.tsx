@@ -82,16 +82,16 @@ const Stake = () => {
   const getDelegation = useRequest(getDelegationAmount, {
     manual: true,
     onSuccess: (res: any) => {
-      const _delegation = res ?? {}
+      const {delegation_response = {}} = res ?? {}
 
-      setDelegation(() => _delegation)
+      setDelegation(() => delegation_response)
     }
   })
 
   return (
       <Layout title={'Stake & Earn MEC'}>
         <div className={styles.stake}>
-          <div className={styles.staking} onClick={() => navigator('/stakeDetail', {state: {type: 'flexible'}})}>
+          <div className={styles.staking} style={{cursor: "default"}}>
             <p className={styles.staking_subject}>STAKING ON META COUNTRY VALIDATOR</p>
             <div className={styles.staking_detail}>
               <div className={styles.staking_detail_title}>
@@ -105,6 +105,22 @@ const Stake = () => {
                       : '0'
                 }</span>
                 <span>{formatCountByDenom(rewards.denom, rewards.amount || '0').amount} MEC</span>
+              </div>
+            </div>
+          </div>
+          <div className={styles.staking} onClick={() => navigator('/stakeDetail', {state: {type: 'flexible'}})}>
+            <div className={styles.staking_fixedDetail}>
+              <div className={styles.staking_fixedDetail_info}>
+                <img src={app} alt=""/>
+                <div className={styles.staking_fixedDetail_info_detail}>
+                  <p className={styles.staking_fixedDetail_info_detail_name}>{regionInfo.name} Staking</p>
+                  <p className={styles.staking_fixedDetail_info_detail_desc}>Period Staking APY M</p>
+                </div>
+              </div>
+              <div className={styles.staking_fixedDetail_count}>
+                <p className={styles.staking_fixedDetail_count_long}>
+                  {formatCountByDenom(delegation?.balance?.denom, delegation?.balance?.amount || '0').amount} <span>MEC</span>
+                </p>
               </div>
             </div>
           </div>
@@ -129,7 +145,7 @@ const Stake = () => {
                         <img src={app} alt=""/>
                         <div className={styles.staking_fixedDetail_info_detail}>
                           <p className={styles.staking_fixedDetail_info_detail_name}>{regionInfo.name} Staking</p>
-                          <p className={styles.staking_fixedDetail_info_detail_desc}>Period Staking APY M</p>
+                          <p className={styles.staking_fixedDetail_info_detail_desc}>Staking Earning</p>
                         </div>
                       </div>
                       <div className={styles.staking_fixedDetail_count}>

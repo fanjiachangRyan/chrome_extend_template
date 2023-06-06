@@ -116,7 +116,7 @@ const StakeList = () => {
             <p className={styles.subject}>Total Staked</p>
             <p className={styles.value}>
               {formatCountByDenom(delegationInfo.balance?.denom || '', delegationInfo.balance?.amount || '0').amount}
-              <span>{formatCountByDenom(delegationInfo.balance?.denom || '', delegationInfo.balance?.amount || '0').denom}</span>
+              <span>MEC</span>
             </p>
           </div>
         </div>
@@ -126,7 +126,7 @@ const StakeList = () => {
                 Treasury
               </p>
               <div className={styles.row}>
-                <p className={styles.subject}>Period Staking APY MAX</p>
+                <p className={styles.subject}>Staking APY</p>
                 <p className={styles.value}>{maxRate}</p>
               </div>
               <div className={styles.row}>

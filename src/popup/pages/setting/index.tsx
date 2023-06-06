@@ -14,7 +14,7 @@ import {getCurrentAccount} from "@/api";
 import {cutStr, disconnect, storage} from "@/api/utils";
 import {Button} from "antd";
 import {useNavigate} from "react-router";
-import {ClientAddrInfoList, ClientAddrType} from "@/config/define";
+import {ClientAddrInfoList, ClientAddrType, getClientAddrType} from "@/config/define";
 
 const Setting = () => {
   const navigator = useNavigate()
@@ -28,13 +28,15 @@ const Setting = () => {
     }
   })
 
-  useEffect(() => {
-    storage.get(['clientAddrType']).then(({clientAddrType = ClientAddrType.Test}: any) => {
-      const netObject = ClientAddrInfoList.find((item: any) => item.value === clientAddrType) || 'Test'
-
+  useRequest(() => getClientAddrType(), {
+    ready: true,
+    refreshDeps: [],
+    onSuccess: (res: any) => {
+      console.log('getClientAddrType==>', res)
+      const netObject = ClientAddrInfoList.find((item: any) => item.value == res) ?? {}
       setNetType(netObject.subject)
-    })
-  }, [])
+    }
+  })
 
   return (
       <Layout title={'Wallet Settings'}>

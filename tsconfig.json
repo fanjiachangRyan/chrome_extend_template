@@ -40,6 +40,7 @@
   "exclude": [
     "src/store/**",
     "src/store/**/*",
-    "src/api/messages/proto.js"
+    "src/api/messages/proto.js",
+    "src/api/*"
   ]
 }

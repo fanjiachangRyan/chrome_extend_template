@@ -1,18 +1,30 @@
 import axios from 'axios';
-import {CHAIN_END_PORT} from "@/config/define";
+import {CHAIN_END_PORT, RequestAddrList} from "@/config/define";
+import {storage} from "@/api/utils";
 
 const instance = axios.create({
   baseURL: `http://118.175.0.246:1317`,
   timeout: 100000,
 });
 
-instance.defaults.baseURL = `http://118.175.0.246:${CHAIN_END_PORT}`
+storage.get(['clientAddrType']).then(({clientAddrType}) => {
+// @ts-ignore
+  instance.defaults.clientAddrType = clientAddrType ?? 1
+})
 
-export const setHttpBaseUrl = (url) => {
-  instance.defaults.baseURL = `${url}:${CHAIN_END_PORT}`
+export const setChainEndNetType = (clientAddrType: number) => {
+  console.log('setChainEndNetType-->clientAddrType', clientAddrType)
+  // @ts-ignore
+  instance.defaults.clientAddrType = clientAddrType
 }
+instance.interceptors.request.use(async (config: any) => {
 
-instance.interceptors.request.use((config: any) => config);
+  config.baseURL = `${RequestAddrList[config.clientAddrType]}:${CHAIN_END_PORT}`
+  console.log('setChainEndNetType-->', config.baseURL)
+  return {
+    ...config
+  }
+});
 
 instance.interceptors.response.use((response: any) => {
   if (response.status !== 200) {

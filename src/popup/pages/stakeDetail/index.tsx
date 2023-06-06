@@ -124,8 +124,8 @@ const StakeDetail = () => {
                 </div>
                 <div className={styles.row}>
                   <p className={styles.subject}>Total unstaked {define.COIN}</p>
-                  <p className={styles.value}>{formatCountByDenom(delegationInfo.balance?.denom || '', delegationInfo.balance?.amount || '0').amount}
-                    <span>{formatCountByDenom(delegationInfo.balance?.denom || '', delegationInfo.balance?.amount || '0').denom}</span>
+                  <p className={styles.value}>{formatCountByDenom(delegationInfo.balance?.denom || '', `${(delegationInfo.delegation?.amount || '0') * 1 + (delegationInfo.delegation?.unKycAmount || '0') * 1}`  || '0').amount}
+                    <span>MEC</span>
                   </p>
                 </div>
               </>

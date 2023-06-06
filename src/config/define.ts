@@ -1,6 +1,6 @@
 import {storage} from "@/api/utils";
-import {setHttpBaseUrl} from "@/api/request";
-import {setLocalHttpBaseUrl} from "@/api/localRequest";
+import {setBackEndNetType} from "@/api/localRequest";
+import {setChainEndNetType} from "@/api/request";
 
 export interface Network {
   name: Readonly<string> // 网络名称
@@ -81,11 +81,11 @@ export const ClientAddrInfoList: any[] = [
     subject: 'Dev',
     url: 'http://192.168.0.207:26657',
     value: 0
-  },{
+  }, {
     subject: 'Test',
     url: 'http://118.175.0.246:26657',
     value: 1
-  },{
+  }, {
     subject: 'Main',
     url: '',
     value: 2
@@ -104,16 +104,20 @@ export const ClientAddrType: any = {
   Main: 2
 }
 
-export const setClientAddrType = (type = ClientAddrType.Test) => {
-  setHttpBaseUrl(RequestAddrList[type])
-  setLocalHttpBaseUrl(RequestAddrList[type])
-  storage.set({clientAddrType: type})
+export const setClientAddrType = async (type: number) => {
+  setBackEndNetType(type)
+  setChainEndNetType(type)
+  await storage.set({clientAddrType: type ?? ClientAddrType.Test})
 }
 
 export const getClientAddrType = async () => {
-  const {clientAddrType = ClientAddrType.Test}: any = await storage.get(['clientAddrType'])
+  const {clientAddrType}: any = await storage.get(['clientAddrType'])
 
-  return clientAddrType
+  if (!([0, 1, 2].includes(clientAddrType))) {
+    await setClientAddrType(ClientAddrType.Test)
+  }
+
+  return clientAddrType ?? ClientAddrType.Test
 }
 
 export const gas_limit = 200000 // 2e5
