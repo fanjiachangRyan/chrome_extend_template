@@ -104,14 +104,14 @@ export const ClientAddrType: any = {
   Main: 2
 }
 
-export const setClientAddrType = (type = ClientAddrType.Dev) => {
+export const setClientAddrType = (type = ClientAddrType.Test) => {
   setHttpBaseUrl(RequestAddrList[type])
   setLocalHttpBaseUrl(RequestAddrList[type])
   storage.set({clientAddrType: type})
 }
 
 export const getClientAddrType = async () => {
-  const {clientAddrType = ClientAddrType.Dev}: any = await storage.get(['clientAddrType'])
+  const {clientAddrType = ClientAddrType.Test}: any = await storage.get(['clientAddrType'])
 
   return clientAddrType
 }

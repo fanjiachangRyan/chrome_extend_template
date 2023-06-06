@@ -3,10 +3,11 @@ import {BACKEND_PORT} from "@/config/define";
 
 
 const instance = axios.create({
-  baseURL: `http://192.168.0.207:8081`,
+  baseURL: `http://118.175.0.246:8081`,
   timeout: 100000,
 });
 
+instance.defaults.baseURL = `http://118.175.0.246:${BACKEND_PORT}`
 export const setLocalHttpBaseUrl = (url) => {
   instance.defaults.baseURL = `${url}:${BACKEND_PORT}`
 }

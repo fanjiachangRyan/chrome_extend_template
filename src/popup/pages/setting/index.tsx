@@ -14,7 +14,7 @@ import {getCurrentAccount} from "@/api";
 import {cutStr, disconnect, storage} from "@/api/utils";
 import {Button} from "antd";
 import {useNavigate} from "react-router";
-import {ClientAddrInfoList, clientAddrList, ClientAddrType} from "@/config/define";
+import {ClientAddrInfoList, ClientAddrType} from "@/config/define";
 
 const Setting = () => {
   const navigator = useNavigate()
@@ -29,8 +29,8 @@ const Setting = () => {
   })
 
   useEffect(() => {
-    storage.get(['clientAddrType']).then(({clientAddrType = ClientAddrType.Dev}: any) => {
-      const netObject = ClientAddrInfoList.find((item: any) => item.value === clientAddrType) || 'Dev'
+    storage.get(['clientAddrType']).then(({clientAddrType = ClientAddrType.Test}: any) => {
+      const netObject = ClientAddrInfoList.find((item: any) => item.value === clientAddrType) || 'Test'
 
       setNetType(netObject.subject)
     })
