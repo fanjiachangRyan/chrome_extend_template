@@ -1,21 +1,6 @@
 import {connect, getCurrentAccount} from "@/api";
 import {getCurrentTab, storage} from "@/api/utils";
 
-if (process.env.NODE_ENV === 'development') {
-  const eventSource = new EventSource(`http://${process.env.REACT_APP__HOST__}:${process.env.REACT_APP__PORT__}/reload/`)
-  eventSource.addEventListener('content_changed_reload', async ({ data }) => {
-    const [tab] = await chrome.tabs.query({
-      active: true,
-      lastFocusedWindow: true,
-    })
-    const tabId = tab.id || 0
-    await chrome.tabs.sendMessage(tabId, {
-      type: 'window.location.reload',
-    })
-    chrome.runtime.reload()
-  })
-}
-
 chrome.runtime.onMessage.addListener(async (request, _sender, sendResponse) => {
   if (request.value === 'requestConnect') {
     const {connectStatus = false} = await storage.get(['connectStatus'])

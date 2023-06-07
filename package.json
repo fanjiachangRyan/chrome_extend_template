@@ -71,6 +71,7 @@
     "sass-loader": "^12.3.0",
     "secp256k1": "3.8.0",
     "semver": "^7.3.5",
+    "serve": "^14.2.0",
     "source-map-loader": "^3.0.0",
     "ssestream": "^1.1.0",
     "style": "^0.0.3",

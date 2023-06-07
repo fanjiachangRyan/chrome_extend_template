@@ -1,6 +1,6 @@
 import {getCurrentAccount} from "@/api/index";
 import {DirectSecp256k1HdWallet, DirectSecp256k1Wallet} from '@cosmjs/proto-signing'
-import {PREFIX} from "@/config/define";
+import {ClientAddrType, PREFIX, setClientAddrType} from "@/config/define";
 
 const customStorage = {
   get: function (keys: string[], callback: (v: any) => void) {
@@ -147,6 +147,31 @@ export const dealType = (type: string) => {
     return ''
   }
   const typeArr = type.split('.')
-  const typeName = typeArr[typeArr.length - 1].replace(/^Msg/, '')
-  return typeName
+
+  return typeArr[typeArr.length - 1].replace(/^Msg/, '')
+}
+
+
+export const getParseNetWork = () => {
+  let url = 'http://118.175.0.246'
+
+  // try {
+  //   console.log(1)
+  //   const res = await storage.get(['clientAddrType'])
+  //   console.log(2)
+  //   const type = res.clientAddrType
+  //
+  //   if (type == 0) {
+  //     url = 'http://192.168.0.207'
+  //   } else if (type == 1) {
+  //     url = 'http://118.175.0.246'
+  //   } else if (type == 2) {
+  //     url = 'http://118.175.0.246'
+  //   }
+  // } catch (e) {
+  //   console.log('getParseNetWork-->', e)
+  // }
+
+
+  return url
 }

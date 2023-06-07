@@ -8,6 +8,11 @@ import { fromString} from 'uint8arrays/from-string'
 import { toString } from 'uint8arrays/to-string'
 import http from './request'
 import localHttp from './localRequest'
+
+export const setUrl = (url: string) => {
+  http.defaults.baseURL = `${url}:1317`
+  localHttp.defaults.baseURL = `${url}:8081`
+}
 export const ME = async () => {
   const {wallet_end_url} = await getParseNetwork()
   return instanceME(wallet_end_url)

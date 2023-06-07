@@ -1,6 +1,5 @@
 import {storage} from "@/api/utils";
-import {setBackEndNetType} from "@/api/localRequest";
-import {setChainEndNetType} from "@/api/request";
+import {setUrl} from "@/api";
 
 export interface Network {
   name: Readonly<string> // 网络名称
@@ -105,8 +104,7 @@ export const ClientAddrType: any = {
 }
 
 export const setClientAddrType = async (type: number) => {
-  setBackEndNetType(type)
-  setChainEndNetType(type)
+  setUrl(RequestAddrList[type])
   await storage.set({clientAddrType: type ?? ClientAddrType.Test})
 }
 

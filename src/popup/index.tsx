@@ -37,8 +37,10 @@ import {disconnect} from "@/api/utils";
 import NetType from "@/popup/pages/netType";
 
 const Router = () => {
-
   useEffect(() => {
+    window.onerror = (e: any) => {
+      console.log('windowerror', e)
+    }
     return () => {
       disconnect()
     }
