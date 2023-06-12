@@ -15,6 +15,7 @@ const StakeDetail = () => {
   const {state = {}} = useLocation()
   const stakeId = state.stakeId || ''
   const type = state.type || ''
+  const isKyc = state.isKyc
   const [fixedInfo, setFixedInfo] = useState<any>({})
   const [time, setTime] = useState<string>('')
   const [delegationInfo, setDelegationInfo] = useState<any>({})
@@ -72,7 +73,13 @@ const StakeDetail = () => {
     onSuccess: (res: any) => {
       if (res.code === 0) {
         message.success('Unstake success!')
-        return navigator('/unStakeResult', {state: {hash: res.transactionHash, type: 'fixed', amount: fixedInfo.principal?.amount}})
+        return navigator('/unStakeResult', {
+          state: {
+            hash: res.transactionHash,
+            type: 'fixed',
+            amount: fixedInfo.principal?.amount
+          }
+        })
       } else {
         message.error('Unstake failed')
       }
@@ -112,7 +119,7 @@ const StakeDetail = () => {
               <>
                 <div className={styles.row}>
                   <p className={styles.subject}>YOU STAKE</p>
-                  <p className={styles.value}>{formatCountByDenom(delegationInfo.balance?.denom || '', delegationInfo.balance?.amount || '0').amount}
+                  <p className={styles.value}>{formatCountByDenom(delegationInfo.balance?.denom || '', (isKyc? delegationInfo.delegation?.amount : delegationInfo.delegation?.unKycAmount) || '0').amount}
                     <span>{formatCountByDenom(delegationInfo.balance?.denom || '', delegationInfo.balance?.amount || '0').denom}</span>
                   </p>
                 </div>
@@ -124,7 +131,7 @@ const StakeDetail = () => {
                 </div>
                 <div className={styles.row}>
                   <p className={styles.subject}>Total unstaked {define.COIN}</p>
-                  <p className={styles.value}>{formatCountByDenom(delegationInfo.balance?.denom || '', `${(delegationInfo.delegation?.amount || '0') * 1 + (delegationInfo.delegation?.unKycAmount || '0') * 1}`  || '0').amount}
+                  <p className={styles.value}>{formatCountByDenom(delegationInfo.balance?.denom || '', `${(isKyc? delegationInfo.delegation?.amount : delegationInfo.delegation?.unKycAmount)}` || '0').amount}
                     <span>MEC</span>
                   </p>
                 </div>
@@ -132,14 +139,14 @@ const StakeDetail = () => {
           )}
         </div>
         {
-          (type === 'flexible') &&
+            (type === 'flexible') &&
           <Button className={styles.unStake} onClick={() => {
             navigator('/stakeFlexible')
           }}>Stake Now</Button>
         }
         <Button loading={loading} className={styles.unStake} onClick={() => {
           if (type === 'flexible') {
-            return navigator('/unStakeFlexible')
+            return navigator('/unStakeFlexible', {state: {isKyc}})
           }
 
           run({id: stakeId})

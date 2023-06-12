@@ -3,18 +3,19 @@ import Layout from "@/popup/components/layout";
 import {formatCountByDenom} from "@/api/utils";
 import define from "@/popup/define";
 import {useRequest} from "ahooks";
-import {getCurrentAccount, getDelegationAmount, getKycInfo, getRewardByAddress} from "@/api";
+import {getCurrentAccount, getDelegationAmount, getRewardByAddress} from "@/api";
 import {useState} from "react";
 import {Button, InputNumber, message} from "antd";
-import {sendMsgUnStake} from './api'
-import {useNavigate} from "react-router";
+import {sendMsgUnDelegate} from './api'
+import {useLocation, useNavigate} from "react-router";
 
 const UnStakeFlexible = () => {
   const [delegationInfo, setDelegationInfo] = useState<any>({})
   const [rewards, setRewards] = useState<any>({})
-  const [amount, setAmount] = useState<string>('')
-  const [isKyc, setIsKyc] = useState<boolean>(false)
+  const [amount, setAmount] = useState<string>('0')
   const navigator = useNavigate()
+  const {state = {}} = useLocation()
+  const {isKyc} = state
 
   useRequest(() => getCurrentAccount(), {
     ready: true,
@@ -22,7 +23,6 @@ const UnStakeFlexible = () => {
     onSuccess: (res: any) => {
       getDelegationAction.run(res.address)
       getRewardsAction.run(res.address)
-      getKycInfoAction.run(res.address)
     }
   })
 
@@ -43,12 +43,7 @@ const UnStakeFlexible = () => {
     }
   })
 
-  const getKycInfoAction = useRequest(getKycInfo, {
-    manual: true,
-    onSuccess: () => setIsKyc(true)
-  })
-
-  const {run, loading} = useRequest(sendMsgUnStake, {
+  const {run, loading} = useRequest(sendMsgUnDelegate, {
     manual: true,
     onSuccess: (res: any) => {
       if (res.code === 0) {
@@ -63,7 +58,7 @@ const UnStakeFlexible = () => {
   return <Layout title={'Unstake'}>
     <div className={styles.row}>
       <p className={styles.subject}>YOU STAKE</p>
-      <p className={styles.value}>{formatCountByDenom(delegationInfo.balance?.denom || '', delegationInfo.balance?.amount || '0').amount}
+      <p className={styles.value}>{formatCountByDenom(delegationInfo.balance?.denom || '', (isKyc ? delegationInfo.delegation?.amount : delegationInfo.delegation?.unKycAmount) || '0').amount}
         <span>{formatCountByDenom(delegationInfo.balance?.denom || '', delegationInfo.balance?.amount || '0').denom}</span>
       </p>
     </div>
@@ -75,12 +70,16 @@ const UnStakeFlexible = () => {
     </div>
     <div className={styles.row}>
       <p className={styles.subject}>Total unstaked {define.COIN}</p>
-      <p className={styles.value}>{formatCountByDenom(delegationInfo.balance?.denom || '', delegationInfo.balance?.amount || '0').amount}
+      <p className={styles.value}>{formatCountByDenom(delegationInfo.balance?.denom || '', (isKyc ? delegationInfo.delegation?.amount : delegationInfo.delegation?.unKycAmount) || '0').amount}
         <span>{formatCountByDenom(delegationInfo.balance?.denom || '', delegationInfo.balance?.amount || '0').denom}</span>
       </p>
     </div>
+    {!!isKyc && <div className={styles.row}>
+      <p className={styles.subject}>Your assets will be credited 7 days after canceling the staking delegation.</p>
+    </div>}
     <div className={styles.amount}>
-      <InputNumber value={amount} onChange={(number: any) => setAmount(number)} min={'0'} max={formatCountByDenom(delegationInfo.balance?.denom || '', delegationInfo.balance?.amount || '0').amount}/>
+      <InputNumber value={amount} onChange={(number: any) => setAmount(number)} min={'0'}
+                   max={formatCountByDenom(delegationInfo.balance?.denom || '', (isKyc ? delegationInfo.delegation?.amount : delegationInfo.delegation?.unKycAmount) || '0').amount}/>
     </div>
     <Button loading={loading} className={styles.unStake} onClick={() => {
       run({amount, validatorAddress: delegationInfo.delegation?.validator_address, isKyc})

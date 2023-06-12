@@ -2,10 +2,12 @@ import styles from './index.less'
 import {Button, Input, message} from "antd";
 import logo from '@/assets/images/app.png'
 import Layout from "@/popup/components/layout";
-import {useState} from "react";
-import {connect, getPassword} from "@/api";
+import {useEffect, useState} from "react";
+import {connect, getPassword, setUrl} from "@/api";
 import {useNavigate} from "react-router";
 import {useRequest} from "ahooks";
+import {storage} from "@/api/utils";
+import { ClientAddrType, RequestAddrList} from "@/config/define";
 
 const Unlock = () => {
   const navigator = useNavigate()
@@ -27,6 +29,14 @@ const Unlock = () => {
       message.error(e)
     }
   })
+
+  useEffect(() => {
+    storage.get(['clientAddrType']).then(({clientAddrType = ClientAddrType.Test}: any) => {
+      const url = RequestAddrList[clientAddrType]
+
+      setUrl(url)
+    })
+  }, [])
 
   return (
       <Layout visibleBack>

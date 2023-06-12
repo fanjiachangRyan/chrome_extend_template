@@ -2,7 +2,7 @@ import {clientAddrList, gas_fee, gas_limit, getClientAddrType, PREFIX} from "@/c
 import {txClient} from "@/store/cosmos.staking.v1beta1/module";
 import {getWallet} from "@/api/utils";
 
-export const sendMsgUnStake = async ({amount, validatorAddress,isKyc = true, memo}: any) => {
+export const sendMsgUnDelegate = async ({amount, validatorAddress,isKyc = true, memo = ''}: any) => {
   try {
     const wallet = await getWallet()
 
@@ -28,3 +28,5 @@ export const sendMsgUnStake = async ({amount, validatorAddress,isKyc = true, mem
     return Promise.reject(error)
   }
 }
+
+
