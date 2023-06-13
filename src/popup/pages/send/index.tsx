@@ -75,7 +75,7 @@ const Send = () => {
               min={'0'}
           />
         </div>
-        <p className={styles.fees}>fees: {gas_fee / 100000} <span>MEC</span></p>
+        <p className={styles.fees}>fees: {gas_fee / 1000000} <span>MEC</span></p>
         <Button
             loading={loading} className={styles.send}
             onClick={() => {

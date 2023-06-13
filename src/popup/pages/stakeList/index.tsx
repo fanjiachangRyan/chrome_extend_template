@@ -24,7 +24,7 @@ const StakeList = () => {
   const [maxRate, setMaxRate] = useState<string>('0%')
   const navigator = useNavigate()
 
-  useRequest(() => getCurrentAccount(), {
+  const {loading} = useRequest(() => getCurrentAccount(), {
     ready: true,
     refreshDeps: [],
     onSuccess: (res: any) => {
@@ -76,7 +76,7 @@ const StakeList = () => {
     }
   })
 
-  useRequest(() => getDelegateRate(), {
+  const getDelegateRateAction = useRequest(() => getDelegateRate(), {
     ready: true,
     refreshDeps: [],
     onSuccess: (res: any) => {
@@ -86,7 +86,7 @@ const StakeList = () => {
     }
   })
 
-  useRequest(() => getDepositAnnualRateList(), {
+  const getDepositAnnualRateListAction = useRequest(() => getDepositAnnualRateList(), {
     ready: true,
     refreshDeps: [],
     onSuccess: (res: any) => {
@@ -103,7 +103,7 @@ const StakeList = () => {
   })
 
   return (
-      <Layout title={'Stake'}>
+      <Layout title={'Stake'} loading={getDepositAnnualRateListAction.loading || getDelegateRateAction.loading || getFixedDetailAction.loading || getRegionInfoAction.loading || loading || getKycInfoAction.loading}>
         <div className={styles.item} onClick={() => navigator('/stake')}>
           <p className={styles.header}>
             {isKyc ? regionInfo.name : 'Staking'}

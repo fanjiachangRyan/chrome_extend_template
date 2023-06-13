@@ -120,7 +120,7 @@ const StakeDetail = () => {
               <>
                 <div className={styles.row}>
                   <p className={styles.subject}>YOU STAKE</p>
-                  <p className={styles.value}>{formatCountByDenom(delegationInfo.balance?.denom || '', (isKyc? delegationInfo.delegation?.amount : delegationInfo.delegation?.unKycAmount) || '0').amount}
+                  <p className={styles.value}>{formatCountByDenom(delegationInfo.balance?.denom || '', (isKyc ? delegationInfo.delegation?.amount : delegationInfo.delegation?.unKycAmount) || '0').amount}
                     <span>{formatCountByDenom(delegationInfo.balance?.denom || '', delegationInfo.balance?.amount || '0').denom}</span>
                   </p>
                 </div>
@@ -132,26 +132,29 @@ const StakeDetail = () => {
                 </div>
                 <div className={styles.row}>
                   <p className={styles.subject}>Total unstaked {define.COIN}</p>
-                  <p className={styles.value}>{formatCountByDenom(delegationInfo.balance?.denom || '', `${(isKyc? delegationInfo.delegation?.amount : delegationInfo.delegation?.unKycAmount)}` || '0').amount}
+                  <p className={styles.value}>{formatCountByDenom(delegationInfo.balance?.denom || '', `${(isKyc ? delegationInfo.delegation?.amount : delegationInfo.delegation?.unKycAmount)}` || '0').amount}
                     <span>MEC</span>
                   </p>
                 </div>
               </>
           )}
         </div>
-        {
-            (type === 'flexible') &&
-          <Button className={styles.unStake} onClick={() => {
-            navigator('/stakeFlexible')
-          }}>Stake Now</Button>
-        }
-        <Button loading={loading} className={styles.unStake} onClick={() => {
-          if (type === 'flexible') {
-            return navigator('/unStakeFlexible', {state: {isKyc}})
+        <div className={styles.buttons}>
+          {
+              (type === 'flexible') &&
+            <Button className={styles.unStake} style={{width: '45%'}} onClick={() => {
+              navigator('/stakeFlexible')
+            }}>Stake Now</Button>
           }
+          <Button loading={loading} className={styles.unStake} style={{width: type === 'flexible' ? '45%' : '100%'}}
+                  onClick={() => {
+                    if (type === 'flexible') {
+                      return navigator('/unStakeFlexible', {state: {isKyc}})
+                    }
 
-          run({id: stakeId})
-        }}>Unstake Now</Button>
+                    run({id: stakeId})
+                  }}>Unstake Now</Button>
+        </div>
       </Layout>
   )
 }

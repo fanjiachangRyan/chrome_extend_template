@@ -75,7 +75,7 @@ const StakeFlexible = () => {
   return (
       <Layout title={'Stake'}>
         <div className={styles.item}>
-          <div className={styles.row}>
+          <div className={styles.row} style={{marginTop: 0}}>
             <p className={styles.subject}>Staking APY</p>
             <p className={styles.value}>{`${flexibleRate || 0}%`}</p>
           </div>
@@ -98,7 +98,7 @@ const StakeFlexible = () => {
         <p className={styles.stakeDesc}>Available - {balance.amount} <span>{balance.denom}</span></p>
         <div className={styles.item}>
           <div className={styles.input}>
-            <InputNumber value={amount} onChange={(val: any) => setAmount(val)} max={balance.amount || '0'} min={'0'}/>
+            <InputNumber controls={false} value={amount} onChange={(val: any) => setAmount(val)} max={balance.amount || '0'} min={'0'}/>
           </div>
           <p className={styles.inputDesc}>Staking Rewards Start in 24 hours</p>
           <p className={styles.gasFees}>Gas
@@ -110,6 +110,7 @@ const StakeFlexible = () => {
           available at the end of one full Epoch of staking.
         </p>
         <Button loading={loading} className={styles.stakeButton} onClick={() => {
+          if (!amount) return message.warning('Amount can not be empty!')
           run({
             amount,
             feeAmount: gas_fee,

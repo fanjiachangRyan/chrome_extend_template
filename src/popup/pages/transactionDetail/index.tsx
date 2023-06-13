@@ -24,7 +24,7 @@ const TransactionDetail = () => {
   const hash = state.hash
   const [transInfo, setTransInfo] = useState<any>({})
 
-  useRequest(() => getTransInfoByHash(hash), {
+  const {loading} = useRequest(() => getTransInfoByHash(hash), {
     ready: !!hash,
     refreshDeps: [hash],
     onSuccess: (res: any) => {
@@ -33,7 +33,7 @@ const TransactionDetail = () => {
   })
 
   return (
-      <Layout title={'Transaction Detail'}>
+      <Layout title={'Transaction Detail'} loading={loading}>
         <div className={styles.result}>
           <img src={transInfo.tx_response?.code === 0 ? success : failed}/>
         </div>

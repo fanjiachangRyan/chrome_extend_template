@@ -5,17 +5,14 @@ import {getAccountList} from "@/api";
 import {useState} from "react";
 import LoadingView from "@/popup/components/loadingView";
 import {cutStr, storage} from "@/api/utils";
-import {Button, Form, Input, message, Modal} from "antd";
+import {Button, message} from "antd";
 import {useNavigate} from "react-router";
 import {CheckCircleFilled} from '@ant-design/icons'
 
 const SwitchAccount = () => {
   const [accountList, setAccountList] = useState<any[]>([])
-  const [isOpen, setIsOpen] = useState<boolean>(false)
-  const [password, setPassword] = useState<string>('')
   const [selectAccount, setSelectAccount] = useState<any>({})
   const navigator = useNavigate()
-  const [form] = Form.useForm()
 
   const {loading} = useRequest(() => getAccountList(), {
     ready: true,
@@ -36,8 +33,23 @@ const SwitchAccount = () => {
                   onClick={() => {
                     if (account.isActive) return
 
-                    setSelectAccount(() => ({...account}))
-                    setIsOpen(true)
+                    storage.get(['accountList']).then(async ({accountList = []}) => {
+                      const _newAccountList = accountList.map((_account: any) => ({
+                        address: _account.address,
+                        mnemonic: _account.mnemonic,
+                        mnemonicArr: _account.mnemonicArr,
+                        pw: _account.pw,
+                        accountName: _account.accountName,
+                        priv: _account.priv,
+                        isActive: _account.address === account.address
+                      }))
+
+                      await storage.set({accountList: [..._newAccountList]})
+                      await storage.set({currentAccount: _newAccountList.find(({isActive}: any) => isActive)})
+
+                      message.success('Switch successfully!')
+                      navigator('/main/home')
+                    })
                   }}>
                 <div
                     className={styles.accountItem_info}
@@ -56,59 +68,6 @@ const SwitchAccount = () => {
             onClick={() => navigator('/addAccount')}>
           Add Account
         </Button>
-        <Modal
-            wrapClassName={styles.modal}
-            centered
-            title={'Enter Password'}
-            open={isOpen}
-            onOk={() => form.submit()}
-            onCancel={() => setIsOpen(false)}
-        >
-          <Form
-              form={form}
-              onFinish={(values: any) => {
-                if (values.password !== selectAccount.pw) {
-                  return message.error('Password error!')
-                }
-
-                storage.get(['accountList']).then(async ({accountList = []}) => {
-                  const _newAccountList = accountList.map((account: any) => ({
-                    address: account.address,
-                    mnemonic: account.mnemonic,
-                    mnemonicArr: account.mnemonicArr,
-                    pw: account.pw,
-                    accountName: account.accountName,
-                    priv: account.priv,
-                    isActive: account.address === selectAccount.address
-                  }))
-
-                  await storage.set({accountList: [..._newAccountList]})
-                  await storage.set({currentAccount: _newAccountList.find(({isActive}: any) => isActive)})
-
-                  setIsOpen(false)
-                  navigator('/main/home')
-                })
-              }}
-          >
-            <Form.Item
-                name={'password'}
-                rules={[{
-                  required: true, validator: (rule: any, value: any) => {
-                    if (!value) return Promise.reject('Password can not be empty!')
-
-                    return Promise.resolve()
-                  }
-                }]}
-            >
-              <Input.Password
-                  className={styles.password}
-                  placeholder={'Please enter the password'}
-                  value={password}
-                  onChange={(e: any) => setPassword(e.target.value)}
-              />
-            </Form.Item>
-          </Form>
-        </Modal>
       </Layout>
   )
 }

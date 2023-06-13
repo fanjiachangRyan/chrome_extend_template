@@ -17,7 +17,7 @@ const UnStakeFlexible = () => {
   const {state = {}} = useLocation()
   const {isKyc} = state
 
-  useRequest(() => getCurrentAccount(), {
+  const getAccountAction = useRequest(() => getCurrentAccount(), {
     ready: true,
     refreshDeps: [],
     onSuccess: (res: any) => {
@@ -55,7 +55,7 @@ const UnStakeFlexible = () => {
     }
   })
 
-  return <Layout title={'Unstake'}>
+  return <Layout title={'Unstake'} loading={getDelegationAction.loading || getRewardsAction.loading || getAccountAction.loading}>
     <div className={styles.row}>
       <p className={styles.subject}>YOU STAKE</p>
       <p className={styles.value}>{formatCountByDenom(delegationInfo.balance?.denom || '', (isKyc ? delegationInfo.delegation?.amount : delegationInfo.delegation?.unKycAmount) || '0').amount}
@@ -78,7 +78,7 @@ const UnStakeFlexible = () => {
       <p className={styles.subject}>Your assets will be credited 7 days after canceling the staking delegation.</p>
     </div>}
     <div className={styles.amount}>
-      <InputNumber value={amount} onChange={(number: any) => setAmount(number)} min={'0'}
+      <InputNumber controls={false} value={amount} onChange={(number: any) => setAmount(number)} min={'0'}
                    max={formatCountByDenom(delegationInfo.balance?.denom || '', (isKyc ? delegationInfo.delegation?.amount : delegationInfo.delegation?.unKycAmount) || '0').amount}/>
     </div>
     <Button loading={loading} className={styles.unStake} onClick={() => {

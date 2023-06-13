@@ -23,10 +23,11 @@ const Stake = () => {
   const navigator = useNavigate()
   const [fixedDepositList, setFixedDepositList] = useState<any[]>([])
   const [delegation, setDelegation] = useState<any>({})
-  const [rewards, setRewards] = useState<any>({denom: 'MEC', amount: '0'})
+  const [rewards, setRewards] = useState<any>('0')
+  const [depositRewards, setDepositRewards] = useState<any>('0')
   const [fixDeposit, setDeposit] = useState<number>(0)
   const [regionInfo, setRegionInfo] = useState<any>({})
-  useRequest(() => getCurrentAccount(), {
+  const {loading} = useRequest(() => getCurrentAccount(), {
     ready: true,
     refreshDeps: [],
     onSuccess: (res: any) => {
@@ -42,9 +43,10 @@ const Stake = () => {
     onSuccess: (res: any) => {
       const {rewards = []} = res
       const _reward: any = rewards[0] ?? {}
-      const rs = formatCountByDenom(_reward.denom, _reward.amount || '0') ?? {denom: 'MEC', amount: '0'}
+      const rs = _reward.amount
+      console.log('rs-->', rs)
 
-      setRewards(() => rs ?? {})
+      setRewards(rs)
     }
   })
 
@@ -72,10 +74,19 @@ const Stake = () => {
 
 
       const _fix = FixedDeposit.reduce((prev: number, item: any) => {
-        prev = prev + (item.principal?.amount || 0) * 1
+        prev = prev + (item.principal?.amount ?? '0') * 1
 
         return prev
       }, 0)
+
+      const _rewards = FixedDeposit.reduce((prev: number, item: any) => {
+        prev = prev + (item.interest?.amount ?? '0') * 1
+
+        return prev
+      }, 0)
+
+      console.log('_rewards-->', _rewards)
+      setDepositRewards(`${_rewards}`)
 
       setDeposit(() => _fix)
     }
@@ -90,7 +101,8 @@ const Stake = () => {
   })
 
   return (
-      <Layout title={'Stake & Earn MEC'}>
+      <Layout title={'Stake & Earn MEC'}
+              loading={getDelegation.loading || getFixedList.loading || getRegionInfoAction.loading || getKycInfoAction.loading || getRewardAction.loading || loading}>
         <div className={styles.stake}>
           <div className={styles.stakingTotal}>
             <p className={styles.staking_subject}>STAKING ON META COUNTRY VALIDATOR</p>
@@ -105,12 +117,19 @@ const Stake = () => {
                       ? `${formatCountByDenom('umec', `${(delegation?.balance?.amount || '0') * 1 + fixDeposit}`).amount} ${formatCountByDenom('umec', `${(delegation?.balance?.amount || '0') * 1 + fixDeposit}`).denom}`
                       : '0'
                 }</span>
-                <span>{formatCountByDenom(rewards.denom, rewards.amount || '0').amount} MEC</span>
+                <span>{formatCountByDenom('umec', `${rewards * 1 + (depositRewards * 1)}`).amount} MEC</span>
               </div>
             </div>
           </div>
-          <div className={styles.staking} onClick={() => navigator('/stakeDetail', {state: {type: 'flexible', isKyc: false, title: 'Pool Staking'}})}>
-            <div className={styles.staking_fixedDetail} style={{borderBottom: "none"}}>
+          {delegation?.delegation?.unKycAmount != '0' && (
+              <div className={styles.staking} onClick={() => navigator('/stakeDetail', {
+            state: {
+              type: 'flexible',
+              isKyc: false,
+              title: 'Pool Staking'
+            }
+          })}>
+            <div className={styles.staking_fixedDetail}>
               <div className={styles.staking_fixedDetail_info}>
                 <img src={app} alt=""/>
                 <div className={styles.staking_fixedDetail_info_detail}>
@@ -120,14 +139,23 @@ const Stake = () => {
               </div>
               <div className={styles.staking_fixedDetail_count}>
                 <p className={styles.staking_fixedDetail_count_long}>
-                  {formatCountByDenom(delegation?.balance?.denom, delegation?.delegation?.unKycAmount || '0').amount} <span>MEC</span>
+                  {formatCountByDenom(delegation?.balance?.denom, delegation?.delegation?.unKycAmount || '0').amount}
+                  <span>MEC</span>
                 </p>
               </div>
             </div>
           </div>
+          )}
           {
-            (delegation.delegation?.unmovable == '1000000') && <div className={styles.staking} onClick={() => navigator('/stakeDetail', {state: {type: 'flexible', isKyc: true, title: `${regionInfo.name || ''} Staking`}})}>
-              <div className={styles.staking_fixedDetail} style={{borderBottom: "none"}}>
+              (delegation.delegation?.unmovable == '1000000') && <div className={styles.staking}
+                                                                      onClick={() => navigator('/stakeDetail', {
+                                                                        state: {
+                                                                          type: 'flexible',
+                                                                          isKyc: true,
+                                                                          title: `${regionInfo.name || ''} Staking`
+                                                                        }
+                                                                      })}>
+              <div className={styles.staking_fixedDetail}>
                 <div className={styles.staking_fixedDetail_info}>
                   <img src={app} alt=""/>
                   <div className={styles.staking_fixedDetail_info_detail}>
@@ -137,7 +165,8 @@ const Stake = () => {
                 </div>
                 <div className={styles.staking_fixedDetail_count}>
                   <p className={styles.staking_fixedDetail_count_long}>
-                    {formatCountByDenom(delegation?.balance?.denom, delegation?.delegation?.amount || '0').amount} <span>MEC</span>
+                    {formatCountByDenom(delegation?.balance?.denom, delegation?.delegation?.amount || '0').amount}
+                    <span>MEC</span>
                   </p>
                 </div>
               </div>
@@ -148,9 +177,11 @@ const Stake = () => {
               const {end_time} = item
               const principal = formatCountByDenom(item.principal.denom, item.principal.amount) ?? {}
               const interest = formatCountByDenom(item.interest.denom, item.interest.amount)
-              const endTimeStamp = moment(end_time).unix()
+              const timeOffset = new Date().getTimezoneOffset()
+              const endTimeStamp = moment(end_time).utcOffset(-timeOffset).unix()
               const current = moment(new Date()).unix()
               const long = current - endTimeStamp
+
               const day = parseInt(`${long / (60 * 60 * 24)}`)
               const hour = parseInt(`${long % (60 * 60 * 24) / 3600}`)
               const min = parseInt(`${long % 60}`)
@@ -163,7 +194,7 @@ const Stake = () => {
                       <div className={styles.staking_fixedDetail_info}>
                         <img src={app} alt=""/>
                         <div className={styles.staking_fixedDetail_info_detail}>
-                          <p className={styles.staking_fixedDetail_info_detail_name}>{regionInfo.name} Staking</p>
+                          <p className={styles.staking_fixedDetail_info_detail_name}>Period Staking</p>
                           <p className={styles.staking_fixedDetail_info_detail_desc}>Staking Earning</p>
                         </div>
                       </div>
