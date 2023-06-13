@@ -15,17 +15,17 @@ const ChangePassword = () => {
             form={form}
             onFinish={async (values: any) => {
               try {
-                storage.get(['currentAccount']).then(async (res: any) => {
-                  if (!res?.address) return message.error('Update failed')
+                storage.get(['currentAccount']).then(async ({currentAccount}: any) => {
+                  if (!currentAccount?.address) return message.error('Update failed')
 
                   const pw = values.password
 
                   await storage.set({pw})
-                  await storage.set({currentAccount: {...res, pw}})
+                  await storage.set({currentAccount: {...currentAccount, pw}})
 
                   const {accountList = []} = await storage.get(['accountList'])
                   const _accountList = accountList.map((account: any) => {
-                    if (account.address === res.address) {
+                    if (account.address === currentAccount.address) {
                       account.pw = pw
                     }
 
@@ -38,6 +38,7 @@ const ChangePassword = () => {
                   navigator(-1)
                 })
               } catch (e) {
+                console.log('e-->', e)
                 message.error('Update failed')
               }
             }}

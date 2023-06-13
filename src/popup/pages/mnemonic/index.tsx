@@ -4,7 +4,7 @@ import styles from './index.less'
 import {useState} from "react";
 import {useRequest} from "ahooks";
 import {ME} from "@/api";
-import {Button} from "antd";
+import {Button, Input} from "antd";
 import {useNavigate} from "react-router";
 
 const Mnemonic = () => {
@@ -40,13 +40,7 @@ const Mnemonic = () => {
               )
           }
           <div className={styles.mnemonics_wrap}>
-            {
-              mnemonic.map((item: any, index: number) => (
-                  <div className={styles.mnemonics_wrap_item} key={item}>
-                    {index + 1}. {item}
-                  </div>
-              ))
-            }
+            <Input.TextArea style={{width: "100%", height: 150}} autoSize={false} value={mnemonic.join(' ')}/>
           </div>
         </div>
 

@@ -1,6 +1,6 @@
-import {addr, gas_fee, gas_limit, PREFIX} from "@/config/define";
+import { ClientAddrType, gas_fee, gas_limit, PREFIX, RequestAddrList} from "@/config/define";
 import {txClient} from "@/store/cosmos.staking.v1beta1/module";
-import {getWallet} from "@/api/utils";
+import {getWallet, storage} from "@/api/utils";
 import {FixedDepositTerm} from "@/store/cosmos.staking.v1beta1/types/cosmos/staking/v1beta1/fixed_deposit";
 
 export const sendMsgFixed = async ({amount, month, memo = ''}: any) => {
@@ -8,7 +8,8 @@ export const sendMsgFixed = async ({amount, month, memo = ''}: any) => {
     const wallet = await getWallet()
 
     const [account] = await wallet.getAccounts()
-
+    const {clientAddrType = ClientAddrType.Test} = await storage.get(['clientAddrType'])
+    const addr = `${RequestAddrList[clientAddrType]}:26657`
     const client = txClient({signer: wallet, addr, prefix: PREFIX})
 
     const data = {

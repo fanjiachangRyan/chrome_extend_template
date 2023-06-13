@@ -104,17 +104,17 @@ const StakeFixed = () => {
             <p className={styles.subject}>Total Staked</p>
             <p className={styles.value}>
               {fixedAmount.amount}
-              <span>{fixedAmount.denom}</span>
+              <span>MEC</span>
             </p>
           </div>
         </div>
-        <p className={styles.stakeTitle}>ENTER RECIPIENT ADDRESS</p>
+        <p className={styles.stakeTitle}>STAKING REWARDS</p>
         <p className={styles.stakeDesc}>Available - {balance.amount} <span>{balance.denom}</span></p>
         <div className={styles.item}>
           <div className={styles.input}>
             <InputNumber value={amount} onChange={(val: any) => setAmount(val)} max={balance.amount || '0'} min={'0'}/>
           </div>
-          <p className={styles.inputDesc}>Awarded Staking Rewards upon expiration</p>
+          <p className={styles.inputDesc}>Staking Rewards Start in 24 hours</p>
           <p className={styles.gasFees}>Gas
             Fees: {formatCountByDenom('umec', `${gas_fee}`).amount} {formatCountByDenom('umec', `${gas_fee}`).denom}</p>
           <p className={styles.selectSubject}>APR</p>
@@ -138,7 +138,7 @@ const StakeFixed = () => {
             }
           </Select>
         </div>
-        <p className={styles.stakeTitle}>ENTER RECIPIENT ADDRESS</p>
+        <p className={styles.stakeTitle}>STAKING REWARDS</p>
         <p className={styles.stakeRewardsDesc}>
           The staked MEC starts earning reward at the end of the Epoch in which it was staked. The rewards will become available at the end of one full Epoch of staking.
         </p>

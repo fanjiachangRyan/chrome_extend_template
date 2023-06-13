@@ -42,7 +42,7 @@ const Stake = () => {
     onSuccess: (res: any) => {
       const {rewards = []} = res
       const _reward: any = rewards[0] ?? {}
-      const rs = formatCountByDenom(_reward.denom, rewards.amount || '0') ?? {denom: 'MEC', amount: '0'}
+      const rs = formatCountByDenom(_reward.denom, _reward.amount || '0') ?? {denom: 'MEC', amount: '0'}
 
       setRewards(() => rs ?? {})
     }
@@ -69,6 +69,8 @@ const Stake = () => {
     onSuccess: (res: any) => {
       const {FixedDeposit = []} = res
       setFixedDepositList(() => FixedDeposit ?? [])
+
+
       const _fix = FixedDeposit.reduce((prev: number, item: any) => {
         prev = prev + (item.principal?.amount || 0) * 1
 
@@ -107,7 +109,7 @@ const Stake = () => {
               </div>
             </div>
           </div>
-          <div className={styles.staking} onClick={() => navigator('/stakeDetail', {state: {type: 'flexible', isKyc: false}})}>
+          <div className={styles.staking} onClick={() => navigator('/stakeDetail', {state: {type: 'flexible', isKyc: false, title: 'Pool Staking'}})}>
             <div className={styles.staking_fixedDetail} style={{borderBottom: "none"}}>
               <div className={styles.staking_fixedDetail_info}>
                 <img src={app} alt=""/>
@@ -124,13 +126,13 @@ const Stake = () => {
             </div>
           </div>
           {
-            (delegation.delegation?.unmovable == '1000000') && <div className={styles.staking} onClick={() => navigator('/stakeDetail', {state: {type: 'flexible', isKyc: true}})}>
+            (delegation.delegation?.unmovable == '1000000') && <div className={styles.staking} onClick={() => navigator('/stakeDetail', {state: {type: 'flexible', isKyc: true, title: `${regionInfo.name || ''} Staking`}})}>
               <div className={styles.staking_fixedDetail} style={{borderBottom: "none"}}>
                 <div className={styles.staking_fixedDetail_info}>
                   <img src={app} alt=""/>
                   <div className={styles.staking_fixedDetail_info_detail}>
                     <p className={styles.staking_fixedDetail_info_detail_name}>{regionInfo.name} Staking</p>
-                    <p className={styles.staking_fixedDetail_info_detail_desc}>Period Staking APY M</p>
+                    <p className={styles.staking_fixedDetail_info_detail_desc}>Starts Earning</p>
                   </div>
                 </div>
                 <div className={styles.staking_fixedDetail_count}>

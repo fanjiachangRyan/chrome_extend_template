@@ -108,17 +108,17 @@ const Home = () => {
             <p>{coin.amount || '0'}</p>
             <span>{coin.denom || Define.COIN_NAME}</span>
           </div>
-          <p className={styles.coins_description}>Net assets value</p>
+          <p className={styles.coins_description}>Net assets</p>
         </div>
-        <div className={styles.handle} onClick={() => {
-          setShowDeposit(() => true)
-        }}>
+        <div className={styles.handle} >
           <div className={styles.handle_button}>
-            <img src={scan} alt=""/>
+            <img src={scan} alt="" onClick={() => {
+              setShowDeposit(() => true)
+            }}/>
             <p>Deposit</p>
           </div>
-          <div className={styles.handle_button} onClick={() => navigator('/send')}>
-            <img src={send} alt=""/>
+          <div className={styles.handle_button} >
+            <img src={send} alt="" onClick={() => navigator('/send')}/>
             <p>Send</p>
           </div>
         </div>

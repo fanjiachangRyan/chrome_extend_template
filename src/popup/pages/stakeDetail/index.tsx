@@ -16,6 +16,7 @@ const StakeDetail = () => {
   const stakeId = state.stakeId || ''
   const type = state.type || ''
   const isKyc = state.isKyc
+  const title = state.title
   const [fixedInfo, setFixedInfo] = useState<any>({})
   const [time, setTime] = useState<string>('')
   const [delegationInfo, setDelegationInfo] = useState<any>({})
@@ -87,7 +88,7 @@ const StakeDetail = () => {
   })
 
   return (
-      <Layout title={'Unstake MEC'}>
+      <Layout title={type === 'flexible' ? title : 'Unstake MEC'}>
         <div className={styles.item}>
           {(type === 'fixed') && (
               <>

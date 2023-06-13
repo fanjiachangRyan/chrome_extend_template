@@ -65,6 +65,7 @@ const Send = () => {
         <p className={styles.subject}>Amount</p>
         <div className={styles.amount}>
           <InputNumber
+              controls={false}
               value={amount}
               onChange={(number: any) => {
                 setAmount(() => number)

@@ -24,12 +24,12 @@ const Mnemonic = () => {
       }
 
       await connect()
-      message.success('success', 2)
+      message.success('Import account successfully!', 2)
 
       navigator('/main/home')
     },
     onError: (error: any) => {
-      message.error(error?.message ?? 'add account error')
+      message.error(error?.message ?? 'Import account error')
     }
   })
 
@@ -42,23 +42,37 @@ const Mnemonic = () => {
         <p className={styles.description}>This 12-word phrase allows you to recover your wallet and access to the coin
           inside.</p>
         <div className={styles.mnemonics}>
-          {
-            mnemonic.map((item: any, index: number) => (
-                <Input
-                    className={styles.mnemonics_item}
-                    key={index}
-                    prefix={<Prefix number={index + 1}/>}
-                    value={item}
-                    onChange={(e: any) => {
-                      setMnemonic((prev: any[]) => {
-                        prev[index] = e.target.value
+          <Input.TextArea autoSize={false} onChange={(e: any) => {
+            const values = e.target.value
+            let newStr = values.replace(/\r\n/g," ")
 
-                        return [...prev]
-                      })
-                    }}
-                />
-            ))
-          }
+            newStr = newStr.replace(/\n/g," ");
+            console.log(newStr.split(' '))
+            setMnemonic(() => newStr.split(' '))
+            // setMnemonic((prev: any[]) => {
+            //   prev[index] = e.target.value
+            //
+            //   return [...prev]
+            // })
+
+          }} style={{width: '100%', height: 150}}/>
+          {/*{*/}
+          {/*  mnemonic.map((item: any, index: number) => (*/}
+          {/*      <Input*/}
+          {/*          className={styles.mnemonics_item}*/}
+          {/*          key={index}*/}
+          {/*          prefix={<Prefix number={index + 1}/>}*/}
+          {/*          value={item}*/}
+          {/*          onChange={(e: any) => {*/}
+          {/*            setMnemonic((prev: any[]) => {*/}
+          {/*              prev[index] = e.target.value*/}
+
+          {/*              return [...prev]*/}
+          {/*            })*/}
+          {/*          }}*/}
+          {/*      />*/}
+          {/*  ))*/}
+          {/*}*/}
         </div>
 
         <Button loading={loading} className={styles.confirm} onClick={() => {

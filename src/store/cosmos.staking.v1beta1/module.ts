@@ -2,10 +2,8 @@
 
 import {StdFee} from "@cosmjs/launchpad";
 import {SigningStargateClient, DeliverTxResponse} from "@cosmjs/stargate";
-import {EncodeObject, GeneratedType, OfflineSigner, Registry} from "@cosmjs/proto-signing";
+import {EncodeObject, OfflineSigner, Registry} from "@cosmjs/proto-signing";
 import {msgTypes} from './registry';
-import {IgniteClient} from "../client"
-import {MissingWalletError} from "../helpers"
 import {Api} from "./rest";
 import {MsgNewRegion} from "./types/cosmos/staking/v1beta1/tx";
 import {MsgNewKyc} from "./types/cosmos/staking/v1beta1/tx";
@@ -69,6 +67,9 @@ import {SVPair as typeSVPair} from "./types"
 import {SVPairs as typeSVPairs} from "./types"
 import {MsgBeginRedelegateResponse as typeMsgBeginRedelegateResponse} from "./types"
 import {MsgCancelUnbondingDelegationResponse as typeMsgCancelUnbondingDelegationResponse} from "./types"
+import {storage} from "@/api/utils";
+import {ClientAddrType, RequestAddrList} from "@/config/define";
+import {setUrl} from "@/api";
 
 export {
   MsgNewRegion,
@@ -267,10 +268,16 @@ interface TxClientOptions {
   signer?: OfflineSigner
 }
 
-export const txClient = ({signer, prefix, addr}: TxClientOptions = {
+export const txClient = ({signer, addr}: TxClientOptions = {
   addr: "http://localhost:26657",
   prefix: "cosmos"
 }) => {
+  // storage.get(['clientAddrType']).then(({clientAddrType = ClientAddrType.Test}: any) => {
+  //   const url = RequestAddrList[clientAddrType]
+  //
+  //   setUrl(url)
+  // })
+
 
   return {
 
@@ -406,6 +413,7 @@ export const txClient = ({signer, prefix, addr}: TxClientOptions = {
       }
       try {
         const {address} = (await signer.getAccounts())[0];
+        console.log('addr-->', addr, 'singer-->', signer)
         const signingClient = await SigningStargateClient.connectWithSigner(addr, signer, {registry});
         let msg = this.msgDoFixedDeposit({value: MsgDoFixedDeposit.fromPartial(value)})
         return await signingClient.signAndBroadcast(address, [msg], fee ? fee : defaultFee, memo)
