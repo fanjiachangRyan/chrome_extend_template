@@ -216,7 +216,7 @@ export const connect = async () => {
           account: account,
         },
         async (result) => {
-          await storage.set({connectStatus: true})
+
         }
     )
   })

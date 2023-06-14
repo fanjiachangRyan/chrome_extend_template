@@ -1,4 +1,4 @@
-import {connect, getCurrentAccount} from "@/api";
+import {getCurrentAccount} from "@/api";
 import {getCurrentTab, storage} from "@/api/utils";
 
 chrome.runtime.onMessage.addListener(async (request, _sender, sendResponse) => {
@@ -7,17 +7,16 @@ chrome.runtime.onMessage.addListener(async (request, _sender, sendResponse) => {
 
     if (!connectStatus) {
       chrome.windows.create({url: `${chrome.runtime.getURL('index.html')}`, type: 'popup', width: 350, height: 600})
-      sendResponse({msg: `backgroundJS --->调起窗口${_sender.url}${_sender?.tab?.windowId}`})
+
+      return sendResponse({msg: `backgroundJS --->调起窗口${_sender.url}${_sender?.tab?.windowId}`})
     }
 
-    return
+    return sendResponse()
   }
-})
 
-
-// 断开连接
-chrome.runtime.onMessage.addListener(async (request, _sender, sendResponse) => {
   if (request.value === 'requestDisconnect') {
+    await storage.set({connectStatus: false})
+    // 断开连接
     const tab: any = await getCurrentTab()
 
     chrome.tabs.sendMessage(
@@ -26,24 +25,16 @@ chrome.runtime.onMessage.addListener(async (request, _sender, sendResponse) => {
           from: 'popup',
           value: 'disconnectConfirm',
         },
-        async () => {
-          sendResponse({ msg: '已断开连接' })
-        }
+        () => {}
     )
-
-    return true
+    sendResponse({ msg: '已断开连接' })
+    return
   }
-})
 
-// 确认授权
-chrome.runtime.onMessage.addListener(async (request, _sender, sendResponse) => {
   if (request.from === 'popup' && request.value === 'connectConfirm') {
-    sendResponse('background.js收到popup.js信息  background收到确认授权的消息')
-
-    const tabs: any = await chrome.tabs.query({ active: true })
+    // 确认授权
+    const tabs: any = await chrome.tabs.query({active: true})
     const account: any = await getCurrentAccount()
-
-
 
     tabs.forEach((tab: any) => {
       chrome.tabs.sendMessage(
@@ -53,13 +44,16 @@ chrome.runtime.onMessage.addListener(async (request, _sender, sendResponse) => {
             value: 'requestConnectConfirm',
             account: account,
           },
-          async (result) => {
-
+          () => {
+            console.log('account--->', account)
           }
       )
     })
-  }
-})
 
+    return sendResponse('background.js收到popup.js信息  background收到确认授权的消息')
+  }
+
+  sendResponse()
+})
 
 export {}

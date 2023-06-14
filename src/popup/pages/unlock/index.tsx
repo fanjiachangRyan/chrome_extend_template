@@ -8,6 +8,7 @@ import {useNavigate} from "react-router";
 import {useRequest} from "ahooks";
 import {storage} from "@/api/utils";
 import { ClientAddrType, RequestAddrList} from "@/config/define";
+import moment from "moment";
 
 const Unlock = () => {
   const navigator = useNavigate()
@@ -20,6 +21,8 @@ const Unlock = () => {
         message.error('The password is invalid', 3)
         return
       }
+
+      await storage.set({lockTime: moment(new Date()).unix()} )
 
       message.success('unlock success!', 1)
       await connect()

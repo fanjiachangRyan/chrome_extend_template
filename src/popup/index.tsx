@@ -22,11 +22,10 @@ import SwitchAccount from "@/popup/pages/switchAccount";
 import AddAccount from "@/popup/pages/addAccount";
 import ManageAccount from "@/popup/pages/manageAccount";
 import ChangeAccountName from "@/popup/pages/changeAccountName";
-import Stake from "@/popup/pages/stake";
 import TransactionDetail from "@/popup/pages/transactionDetail";
 import Send from "@/popup/pages/send";
-import StakeDetail from "@/popup/pages/stakeDetail";
-import StakeList from "@/popup/pages/stakeList";
+import HandleStake from "@/popup/pages/handleStake";
+import SelectStake from "@/popup/pages/selectStake";
 import StakeFixed from "@/popup/pages/stakeFixed";
 import StakeFlexible from "@/popup/pages/stakeFlexible";
 import UnStakeFlexible from "@/popup/pages/unStakeFlexible";
@@ -35,6 +34,8 @@ import UnStakeResult from "@/popup/pages/unStakeResult";
 import {useEffect} from "react";
 import {disconnect} from "@/api/utils";
 import NetType from "@/popup/pages/netType";
+import StakeList from "@/popup/pages/stakeList";
+import GetReward from "@/popup/pages/getReward";
 
 const Router = () => {
   useEffect(() => {
@@ -76,17 +77,18 @@ const Router = () => {
               <Route path="/addAccount" element={<AddAccount/>}/>
               <Route path="/manageAccount" element={<ManageAccount/>}/>
               <Route path="/changeAccountName" element={<ChangeAccountName/>}/>
-              <Route path="/stake" element={<Stake/>}/>
+              <Route path="/stakeList" element={<StakeList/>}/>
               <Route path={'/transactionDetail'} element={<TransactionDetail/>}/>
               <Route path={'/send'} element={<Send/>}/>
-              <Route path={'/stakeList'} element={<StakeList/>}/>
+              <Route path={'/selectStake'} element={<SelectStake/>}/>
               <Route path={'/stakeFixed'} element={<StakeFixed/>}/>
               <Route path={'/stakeFlexible'} element={<StakeFlexible/>}/>
-              <Route path={'/stakeDetail'} element={<StakeDetail/>}/>
+              <Route path={'/handleStake'} element={<HandleStake/>}/>
               <Route path={'/unStakeFlexible'} element={<UnStakeFlexible/>}/>
               <Route path={'/stakeResult'} element={<StakeResult/>}/>
               <Route path={'/unStakeResult'} element={<UnStakeResult/>}/>
               <Route path={'/netType'} element={<NetType />}/>
+              <Route path={'/getReward'} element={<GetReward />}/>
               <Route path="*" element={<NoMatch/>}/>
             </Routes>
           </HashRouter>

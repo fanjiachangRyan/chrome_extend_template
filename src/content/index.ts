@@ -12,183 +12,95 @@ scriptElement.type = 'text/javascript'
 container.insertBefore(scriptElement, container.children[0])
 scriptElement.remove()
 
-//
 window.addEventListener(
     'message',
     (event: MessageEvent) => {
-      if (DOMAINS.includes(event.origin) && event.data.from === 'injectedScript' && event.data.value === 'requestConnect') {
-        try {
+      if (DOMAINS.includes(event.origin) && event.data.from === 'injectedScript') {
+        if (event.data.value === 'requestConnect') {
           chrome.runtime.sendMessage(
               {
                 value: event.data.value,
                 origin: event.origin,
               },
-              (res) => {}
+              (res) => {
+                console.log('requestConnect-->', res)
+              }
           )
-        } catch (error) {
-          console.error('error::', error)
+        } else if (event.data.value === 'requestDisconnect') {
+          chrome.runtime.sendMessage(
+              {
+                value: event.data.value,
+                origin: event.origin,
+              },
+              (res) => {
+                console.log('requestDisconnect-->', res)
+              }
+          )
         }
       }
     },
     false
 )
 
-// 监听确认授权消息
 chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
-  if (request.from === 'popup' && request.value === 'requestConnectConfirm') {
-    window.postMessage(
-        {
-          value: request.value,
-          form: 'content',
-          account: request.account,
-        },
-        window.location.origin
-    )
-    return sendResponse({msg: 'content收到确认授权'})
-  } else if (request.from === 'popup' && request.value === 'requestConnectCancel') {
-    window.postMessage(
-        {
-          value: request.value,
-          form: 'content',
-        },
-        window.location.origin
-    )
-
-    return sendResponse({msg: '收到取消授权'})
-  }
-})
-
-// 监听取消授权消息
-chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
-  if (request.from === 'popup' && request.value === 'requestConnectCancel') {
-
-    window.postMessage(
-        {
-          value: request.value,
-          form: 'content',
-        },
-        window.location.origin
-    )
-
-    return sendResponse()
-  }
-})
-
-// 监听断开消息
-chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
-  if (request.from === 'popup' && request.value === 'disconnect') {
-
-    window.postMessage(
-        {
-          value: request.value,
-          form: 'content',
-        },
-        window.location.origin
-    )
-
-    return sendResponse()
-  }
-})
-
-// 监听请求断开消息
-window.addEventListener(
-    'message',
-    async (event: MessageEvent) => {
-      if (DOMAINS.includes(event.origin) && event.data.from === 'injectedScript' && event.data.value === 'requestDisconnect') {
-        chrome.runtime.sendMessage(
+  if (request.from === 'popup') {
+    switch (request.value) {
+      case 'requestConnectConfirm':
+        // 监听确认授权消息
+        window.postMessage(
             {
-              value: event.data.value,
-              origin: event.origin,
+              value: request.value,
+              form: 'content',
+              account: request.account,
             },
-            (res) => {}
+            window.location.origin
         )
-      }
-    },
-    false
-)
-
-// 监听已断开消息
-chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
-  if (request.from === 'popup' && request.value === 'disconnectConfirm') {
-    window.postMessage(
-        {
-          value: request.value,
-          form: 'content',
-        },
-        window.location.origin
-    )
-    storage.set({connectStatus: false})
-    return sendResponse({msg: '收到确认断开'})
-  }
-})
-
-// 监听普通交易请求
-window.addEventListener(
-    'message',
-    async (event: MessageEvent) => {
-      if (event.data.from === 'injectedScript' && event.data.value === 'createSend') {
-        chrome.runtime.sendMessage(
+        sendResponse({msg: 'content收到确认授权'})
+        break;
+      case 'requestConnectCancel':
+        // 监听确认授权取消的消息
+        window.postMessage(
             {
-              value: event.data.value,
-              origin: event.origin,
-              tx: event.data.tx,
+              value: request.value,
+              form: 'content',
             },
-            (res) => {
-            }
+            window.location.origin
         )
-      }
-    },
-    false
-)
 
-// 监听其他交易请求
-window.addEventListener(
-    'message',
-    async (event: MessageEvent) => {
-      if (event.data.from === 'injectedScript' && event.data.value === 'sendTx') {
-        chrome.runtime.sendMessage(
+        sendResponse()
+        break;
+      case 'disconnect':
+        // 监听断开消息
+        window.postMessage(
             {
-              value: event.data.value,
-              origin: event.origin,
-              tx: event.data.tx,
+              value: request.value,
+              form: 'content',
             },
-            (res) => {}
+            window.location.origin
         )
-      }
-    },
-    false
-)
+        sendResponse({msg: '断开'})
+        break;
+      case "disconnectConfirm":
+        // 监听已断开消息
+        window.postMessage(
+            {
+              value: request.value,
+              form: 'content',
+            },
+            window.location.origin
+        )
 
-// 监听其他交易结果
-chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
-  if (request.from === 'popup' && request.value === 'sendTx') {
-    window.postMessage(
-        {
-          value: request.value,
-          form: 'content',
-          response: request.response,
-        },
-        window.location.origin
-    )
-
-    return sendResponse({msg: '收到其他交易结果'})
+        storage.set({connectStatus: false})
+        sendResponse({msg: '收到确认断开'})
+        break;
+      default:
+        sendResponse()
+        break;
+    }
   }
+
+
 })
 
-// 监听普通交易结果
-chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
-  if (request.from === 'popup' && request.value === 'createSend') {
-    window.postMessage(
-        {
-          value: request.value,
-          form: 'content',
-          response: request.response,
-        },
-        window.location.origin
-    )
-
-    return sendResponse({msg: '收到普通交易结果'})
-  }
-})
 
 export {}

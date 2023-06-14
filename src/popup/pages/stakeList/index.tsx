@@ -1,36 +1,49 @@
 import styles from './index.less'
-import Layout from "@/popup/components/layout";
-import {useState} from "react";
-import {useRequest} from "ahooks";
+import {useNavigate} from "react-router";
 import {
   getCurrentAccount,
-  getDelegateRate,
   getDelegationAmount,
-  getDepositAnnualRateList,
   getFixedDeposit,
   getKycInfo,
   getRegionInfo,
+  getRewardByAddress
 } from "@/api";
+import {useRequest} from "ahooks";
+import {useState} from "react";
+import Layout from "@/popup/components/layout";
 import {formatCountByDenom} from "@/api/utils";
-import {useNavigate} from "react-router";
+import app from '@/assets/images/app.png'
+import moment from "moment";
 
-const StakeList = () => {
-  const [currentAccount, setCurrentAccount] = useState<any>({})
-  const [fixedAmount, setFixAmount] = useState<any>({})
-  const [delegationInfo, setDelegationInfo] = useState<any>({})
-  const [regionInfo, setRegionInfo] = useState<any>({})
-  const [isKyc, setIsKyc] = useState<boolean>(false)
-  const [flexibleRate, setFlexibleRate] = useState<number>(0)
-  const [maxRate, setMaxRate] = useState<string>('0%')
+
+const Stake = () => {
   const navigator = useNavigate()
-
+  const [fixedDepositList, setFixedDepositList] = useState<any[]>([])
+  const [delegation, setDelegation] = useState<any>({})
+  const [rewards, setRewards] = useState<any>('0')
+  const [depositRewards, setDepositRewards] = useState<any>('0')
+  const [fixDeposit, setDeposit] = useState<number>(0)
+  const [regionInfo, setRegionInfo] = useState<any>({})
   const {loading} = useRequest(() => getCurrentAccount(), {
     ready: true,
     refreshDeps: [],
     onSuccess: (res: any) => {
-      setCurrentAccount(() => res ?? {})
-      getDelegationAction.run(res.address)
+      getFixedList.run(res.address)
+      getDelegation.run(res.address)
+      getRewardAction.run(res.address)
       getKycInfoAction.run(res.address)
+    }
+  })
+
+  const getRewardAction = useRequest(getRewardByAddress, {
+    manual: true,
+    onSuccess: (res: any) => {
+      const {rewards = []} = res
+      const _reward: any = rewards[0] ?? {}
+      const rs = _reward.amount
+      console.log('rs-->', rs)
+
+      setRewards(rs)
     }
   })
 
@@ -38,9 +51,7 @@ const StakeList = () => {
     manual: true,
     onSuccess: (res: any) => {
       const {kyc = {}} = res
-      setIsKyc(() => true)
 
-      getFixedDetailAction.run(currentAccount.address)
       getRegionInfoAction.run(kyc.regionId)
     }
   })
@@ -52,94 +63,153 @@ const StakeList = () => {
     }
   })
 
-  const getDelegationAction = useRequest(getDelegationAmount, {
+  const getFixedList = useRequest(getFixedDeposit, {
     manual: true,
     onSuccess: (res: any) => {
-      const {delegation_response = {}} = res ?? {}
-      setDelegationInfo(() => delegation_response ?? {})
-    }
-  })
+      const {FixedDeposit = []} = res
+      setFixedDepositList(() => FixedDeposit ?? [])
 
 
-  const getFixedDetailAction = useRequest(getFixedDeposit, {
-    manual: true,
-    onSuccess: (res: any) => {
-      const {FixedDeposit = []} = res ?? {}
-      const amount: any = FixedDeposit.reduce((prev: number, item: any) => {
-        prev += (item.principal?.amount || 0) * 1
+      const _fix = FixedDeposit.reduce((prev: number, item: any) => {
+        prev = prev + (item.principal?.amount ?? '0') * 1
 
         return prev
       }, 0)
 
-      const total = formatCountByDenom('umec', `${amount || '0'}`)
-      setFixAmount(() => total ?? {})
+      const _rewards = FixedDeposit.reduce((prev: number, item: any) => {
+        prev = prev + (item.interest?.amount ?? '0') * 1
+
+        return prev
+      }, 0)
+
+      setDepositRewards(`${_rewards}`)
+
+      setDeposit(() => _fix)
     }
   })
 
-  const getDelegateRateAction = useRequest(() => getDelegateRate(), {
-    ready: true,
-    refreshDeps: [],
+  const getDelegation = useRequest(getDelegationAmount, {
+    manual: true,
     onSuccess: (res: any) => {
-      const {data = 0} = res ?? {}
-
-      setFlexibleRate(data.toFixed(2))
-    }
-  })
-
-  const getDepositAnnualRateListAction = useRequest(() => getDepositAnnualRateList(), {
-    ready: true,
-    refreshDeps: [],
-    onSuccess: (res: any) => {
-      const {FixedDepositAnnualRate = {}}: any = res ?? {}
-
-      const values = Object.values(FixedDepositAnnualRate) ?? []
-
-      const _values = values.map((item: any) => item * 1)
-
-      const maxVal = _values.reduce((prev: number, item: any) => item > prev ? item : prev, 0)
-
-      setMaxRate(() => `${maxVal * 100}%`)
+      const {delegation_response = {}} = res ?? {}
+      setDelegation(() => delegation_response)
     }
   })
 
   return (
-      <Layout title={'Stake'} loading={getDepositAnnualRateListAction.loading || getDelegateRateAction.loading || getFixedDetailAction.loading || getRegionInfoAction.loading || loading || getKycInfoAction.loading}>
-        <div className={styles.item} onClick={() => navigator('/stake')}>
-          <p className={styles.header}>
-            {isKyc ? regionInfo.name : 'Staking'}
-          </p>
-          <div className={styles.row}>
-            <p className={styles.subject}>Staking APY</p>
-            <p className={styles.value}>{`${flexibleRate || 0}%`}</p>
-          </div>
-          <div className={styles.row}>
-            <p className={styles.subject}>Total Staked</p>
-            <p className={styles.value}>
-              {formatCountByDenom(delegationInfo.balance?.denom || '', delegationInfo.balance?.amount || '0').amount}
-              <span>MEC</span>
-            </p>
-          </div>
-        </div>
-        {isKyc && (
-            <div className={styles.item} onClick={() => navigator('/stakeFixed')}>
-              <p className={styles.header}>
-                Treasury
-              </p>
-              <div className={styles.row}>
-                <p className={styles.subject}>Staking APY</p>
-                <p className={styles.value}>{maxRate}</p>
+      <Layout title={'Stake & Earn MEC'}
+              loading={getDelegation.loading || getFixedList.loading || getRegionInfoAction.loading || getKycInfoAction.loading || getRewardAction.loading || loading}>
+        <div className={styles.stake}>
+          <div className={styles.stakingTotal}>
+            <p className={styles.staking_subject}>STAKING ON META COUNTRY VALIDATOR</p>
+            <div className={styles.staking_detail}>
+              <div className={styles.staking_detail_title}>
+                <span>YOUR STAKE</span>
+                <span>EARNED</span>
               </div>
-              <div className={styles.row}>
-                <p className={styles.subject}>Total Staked</p>
-                <p className={styles.value}>
-                  {fixedAmount.amount}
-                  <span>{fixedAmount.denom}</span>
+              <div className={styles.staking_detail_count}>
+                <span>{
+                  formatCountByDenom('umec', `${(delegation?.balance?.amount || '0') * 1 + fixDeposit}`).amount && formatCountByDenom('umec', `${(delegation?.balance?.amount || '0') * 1 + fixDeposit}`).amount != 0
+                      ? `${formatCountByDenom('umec', `${(delegation?.balance?.amount || '0') * 1 + fixDeposit}`).amount} ${formatCountByDenom('umec', `${(delegation?.balance?.amount || '0') * 1 + fixDeposit}`).denom}`
+                      : '0'
+                }</span>
+                <span>{formatCountByDenom('umec', `${rewards * 1 + (depositRewards * 1)}`).amount} MEC</span>
+              </div>
+            </div>
+          </div>
+          {delegation?.delegation?.unKycAmount != '0' && (
+              <div className={styles.staking} onClick={() => navigator('/handleStake', {
+            state: {
+              type: 'flexible',
+              isKyc: false,
+              title: 'Pool Staking'
+            }
+          })}>
+            <div className={styles.staking_fixedDetail}>
+              <div className={styles.staking_fixedDetail_info}>
+                <img src={app} alt=""/>
+                <div className={styles.staking_fixedDetail_info_detail}>
+                  <p className={styles.staking_fixedDetail_info_detail_name}>Pool Staking</p>
+                  <p className={styles.staking_fixedDetail_info_detail_desc}>Starts Earning</p>
+                </div>
+              </div>
+              <div className={styles.staking_fixedDetail_count}>
+                <p className={styles.staking_fixedDetail_count_long}>
+                  {formatCountByDenom(delegation?.balance?.denom, delegation?.delegation?.unKycAmount || '0').amount}
+                  <span>MEC</span>
                 </p>
               </div>
             </div>
-        )}
+          </div>
+          )}
+          {
+              (delegation.delegation?.unmovable == '1000000') && <div className={styles.staking}
+                                                                      onClick={() => navigator('/handleStake', {
+                                                                        state: {
+                                                                          type: 'flexible',
+                                                                          isKyc: true,
+                                                                          title: `${regionInfo.name || ''} Staking`
+                                                                        }
+                                                                      })}>
+              <div className={styles.staking_fixedDetail}>
+                <div className={styles.staking_fixedDetail_info}>
+                  <img src={app} alt=""/>
+                  <div className={styles.staking_fixedDetail_info_detail}>
+                    <p className={styles.staking_fixedDetail_info_detail_name}>{regionInfo.name} Staking</p>
+                    <p className={styles.staking_fixedDetail_info_detail_desc}>Starts Earning</p>
+                  </div>
+                </div>
+                <div className={styles.staking_fixedDetail_count}>
+                  <p className={styles.staking_fixedDetail_count_long}>
+                    {formatCountByDenom(delegation?.balance?.denom, delegation?.delegation?.amount || '0').amount}
+                    <span>MEC</span>
+                  </p>
+                </div>
+              </div>
+            </div>
+          }
+          {
+            fixedDepositList.map((item: any) => {
+              const {end_time} = item
+              const principal = formatCountByDenom(item.principal.denom, item.principal.amount) ?? {}
+              const interest = formatCountByDenom(item.interest.denom, item.interest.amount)
+              const timeOffset = new Date().getTimezoneOffset()
+              const endTimeStamp = moment(end_time).utcOffset(-timeOffset).unix()
+              const current = moment(new Date()).unix()
+              const long = current - endTimeStamp
+
+              const day = parseInt(`${long / (60 * 60 * 24)}`)
+              const hour = parseInt(`${long % (60 * 60 * 24) / 3600}`)
+              const min = parseInt(`${long % 60}`)
+              const times = long > 0 ? `in ${day > 0 ? `${day} days` : ''} ${hour > 0 ? `${hour} hours` : ''} ${min > 0 ? `${min} mins` : ''}` : ''
+
+              return (
+                  <div className={styles.staking} key={item.id}
+                       onClick={() => navigator('/handleStake', {state: {stakeId: item.id, type: 'fixed'}})}>
+                    <div className={styles.staking_fixedDetail}>
+                      <div className={styles.staking_fixedDetail_info}>
+                        <img src={app} alt=""/>
+                        <div className={styles.staking_fixedDetail_info_detail}>
+                          <p className={styles.staking_fixedDetail_info_detail_name}>Period Staking</p>
+                          <p className={styles.staking_fixedDetail_info_detail_desc}>Staking Earning</p>
+                        </div>
+                      </div>
+                      <div className={styles.staking_fixedDetail_count}>
+                        <p className={styles.staking_fixedDetail_count_long}>{principal.amount} {principal.denom}</p>
+                        <p className={styles.staking_fixedDetail_count_amount}>{interest.amount} {interest.denom}</p>
+                      </div>
+                    </div>
+                    <div className={styles.staking_fixedTime}>
+                      <span>{times}</span>
+                      {(long <= 0) && <div className={styles.staking_fixedTime_dot}/>}
+                    </div>
+                  </div>
+              )
+            })
+          }
+        </div>
       </Layout>
   )
 }
 
-export default StakeList
+export default Stake

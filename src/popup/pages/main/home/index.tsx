@@ -1,5 +1,5 @@
 import styles from './index.less'
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {useRequest} from "ahooks";
 import {
   getBalanceByAddress,
@@ -8,12 +8,11 @@ import {
   getDepositAnnualRateList,
   getFixedDeposit
 } from "@/api";
-import {formatCountByDenom} from "@/api/utils";
+import {formatCountByDenom, storage} from "@/api/utils";
 import scan from '@/assets/images/scan.png'
 import send from '@/assets/images/send.png'
 import stake from '@/assets/images/stake.png'
 import {InboxOutlined} from '@ant-design/icons'
-import delegate from '@/assets/images/scan.png'
 import Define from "@/popup/define";
 import LoadingView from "@/popup/components/loadingView";
 import {useNavigate} from "react-router";
@@ -39,6 +38,10 @@ const Home = () => {
       getBalanceByAddressAction.run(res.address || '')
     }
   })
+
+  useEffect(() => {
+    storage.set({connectStatus: true})
+  }, [])
 
   useRequest(() => getFixedDeposit(currentAccount.address), {
     ready: !!currentAccount.address,
@@ -123,7 +126,7 @@ const Home = () => {
           </div>
         </div>
         <HomeSubject subject={`${Define.COIN} STAKE`}/>
-        <div className={[styles.wrap, styles.stake].join(' ')} onClick={() => navigator('/stakeList')}>
+        <div className={[styles.wrap, styles.stake].join(' ')} onClick={() => navigator('/selectStake')}>
           <img src={stake} alt=""/>
           <div className={styles.stake_content}>
             <p className={styles.stake_content_title}>{delegateAmount != '0' ? 'Currently Staked' : `Stake & Earn`}</p>

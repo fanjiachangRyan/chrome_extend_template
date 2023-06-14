@@ -1,9 +1,9 @@
 import styles from './index.less'
 import {Button} from "antd";
 import {useNavigate} from "react-router";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import Layout from "@/popup/components/layout";
-import {getCurrentAccount} from "@/api";
+import {getCurrentAccount, setUrl} from "@/api";
 import {useRequest} from "ahooks";
 import logo from '@/assets/images/app.png'
 import {
@@ -14,9 +14,10 @@ import {
   PicCenterOutlined,
   CopyFilled
 } from "@ant-design/icons";
-import {cutStr} from "@/api/utils";
+import {cutStr, storage} from "@/api/utils";
 import {useLocation, Outlet} from 'react-router'
 import copy from "@/config/copy";
+import {ClientAddrType, RequestAddrList} from "@/config/define";
 
 const routes: any[] = [
   {
@@ -51,6 +52,14 @@ const Main = () => {
       setCurrentAccount(() => res)
     }
   })
+
+  useEffect(() => {
+    storage.get(['clientAddrType']).then(({clientAddrType = ClientAddrType.Test}: any) => {
+      const url = RequestAddrList[clientAddrType]
+
+      setUrl(url)
+    })
+  }, [])
 
   return (
       <Layout visibleBack>

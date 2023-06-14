@@ -9,9 +9,9 @@ import {Button, InputNumber, message} from "antd";
 import moment from "moment/moment";
 import define from "@/popup/define";
 import {useNavigate} from "react-router";
-import {sendMsgUnDeposit} from "@/popup/pages/stakeDetail/api";
+import {sendMsgUnDeposit} from "./api";
 
-const StakeDetail = () => {
+const HandleStake = () => {
   const {state = {}} = useLocation()
   const stakeId = state.stakeId || ''
   const type = state.type || ''
@@ -143,8 +143,8 @@ const StakeDetail = () => {
           {
               (type === 'flexible') &&
             <Button className={styles.unStake} style={{width: '45%'}} onClick={() => {
-              navigator('/stakeFlexible')
-            }}>Stake Now</Button>
+              navigator('/getReward', {state: {isKyc}})
+            }}>Get Reward</Button>
           }
           <Button loading={loading} className={styles.unStake} style={{width: type === 'flexible' ? '45%' : '100%'}}
                   onClick={() => {
@@ -159,4 +159,4 @@ const StakeDetail = () => {
   )
 }
 
-export default StakeDetail
+export default HandleStake

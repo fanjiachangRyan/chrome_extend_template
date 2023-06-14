@@ -28,12 +28,17 @@
       ]
     }
   ],
-  "permissions": ["storage"],
+  "permissions": [
+    "storage"
+  ],
   "icons": {"128": "/images/app.png"},
   "web_accessible_resources": [
     {
       "resources": ["/images/app.png", "/static/js/injectedScript.js"],
       "matches": ["<all_urls>"]
     }
-  ]
+  ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self';object-src 'none'"
+  }
 }

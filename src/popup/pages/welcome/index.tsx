@@ -4,9 +4,21 @@ import {MediumOutlined} from '@ant-design/icons'
 import {useNavigate} from "react-router";
 import Layout from "@/popup/components/layout";
 import {ADD_WALLET_TYPE} from "@/popup/define";
+import {useEffect} from "react";
+import {storage} from "@/api/utils";
+import {ClientAddrType, RequestAddrList} from "@/config/define";
+import {setUrl} from "@/api";
 
 const Welcome = (props: any) => {
   const navigator = useNavigate()
+
+  useEffect(() => {
+    storage.get(['clientAddrType']).then(({clientAddrType = ClientAddrType.Test}: any) => {
+      const url = RequestAddrList[clientAddrType]
+
+      setUrl(url)
+    })
+  }, [])
 
   return (
       <Layout visibleBack>

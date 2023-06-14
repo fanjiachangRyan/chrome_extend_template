@@ -8,13 +8,14 @@ import {
   LockOutlined,
   GlobalOutlined
 } from '@ant-design/icons'
-import {useEffect, useState} from "react";
+import {useState} from "react";
 import {useRequest} from "ahooks";
 import {getCurrentAccount} from "@/api";
 import {cutStr, disconnect, storage} from "@/api/utils";
 import {Button} from "antd";
 import {useNavigate} from "react-router";
-import {ClientAddrInfoList, ClientAddrType, getClientAddrType} from "@/config/define";
+import {ClientAddrInfoList,  getClientAddrType} from "@/config/define";
+import moment from "moment/moment";
 
 const Setting = () => {
   const navigator = useNavigate()
@@ -72,6 +73,7 @@ const Setting = () => {
         </div>
         <Button className={styles.lockButton} onClick={async () => {
           await disconnect()
+          await storage.set({lockTime: moment(new Date()).unix() - 60 * 15 })
           navigator('/unlock')
         }}>Lock Wallet</Button>
       </Layout>
