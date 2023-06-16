@@ -86,19 +86,12 @@ const StakeFlexible = () => {
               <span>{formatCountByDenom(delegationInfo.balance?.denom || '', delegationInfo.balance?.amount || '0').denom}</span>
             </p>
           </div>
-          <div className={styles.row}>
-            <p className={styles.subject}>Your Staked MEC</p>
-            <p className={styles.value}>
-              {formatCountByDenom(delegationInfo.balance?.denom || '', delegationInfo.balance?.amount || '0').amount}
-              <span>{formatCountByDenom(delegationInfo.balance?.denom || '', delegationInfo.balance?.amount || '0').denom}</span>
-            </p>
-          </div>
         </div>
         <p className={styles.stakeTitle}>STAKING REWARDS</p>
         <p className={styles.stakeDesc}>Available - {balance.amount} <span>{balance.denom}</span></p>
         <div className={styles.item}>
           <div className={styles.input}>
-            <InputNumber controls={false} value={amount} onChange={(val: any) => setAmount(val)} max={balance.amount || '0'} min={'0'}/>
+            <InputNumber controls={false} value={amount} precision={6} onChange={(val: any) => setAmount(val)} max={balance.amount || '0'} min={'0.01'}/>
           </div>
           <p className={styles.inputDesc}>Staking Rewards Start in 24 hours</p>
           <p className={styles.gasFees}>Gas

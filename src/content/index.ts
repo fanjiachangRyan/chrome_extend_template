@@ -22,9 +22,7 @@ window.addEventListener(
                 value: event.data.value,
                 origin: event.origin,
               },
-              (res) => {
-                console.log('requestConnect-->', res)
-              }
+              () => {}
           )
         } else if (event.data.value === 'requestDisconnect') {
           chrome.runtime.sendMessage(
@@ -33,7 +31,6 @@ window.addEventListener(
                 origin: event.origin,
               },
               (res) => {
-                console.log('requestDisconnect-->', res)
               }
           )
         }

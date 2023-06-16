@@ -84,9 +84,6 @@ const StakeFixed = () => {
       } else {
         message.error('Stake failed')
       }
-    },
-    onError: (error: any) => {
-      console.log('error-->', error)
     }
   })
 
@@ -112,7 +109,7 @@ const StakeFixed = () => {
         <p className={styles.stakeDesc}>Available - {balance.amount} <span>{balance.denom}</span></p>
         <div className={styles.item}>
           <div className={styles.input}>
-            <InputNumber controls={false} value={amount} onChange={(val: any) => setAmount(val)} max={balance.amount || '0'} min={'0'}/>
+            <InputNumber controls={false} value={amount} precision={6} onChange={(val: any) => setAmount(val)} max={balance.amount || '0'} min={'0.01'}/>
           </div>
           <p className={styles.inputDesc}>Staking Rewards Start in 24 hours</p>
           <p className={styles.gasFees}>Gas
@@ -124,18 +121,24 @@ const StakeFixed = () => {
               onChange={(value: any) => {
                 setCurrentRate(value)
               }}
-          >
-            {
-              Object.keys(rateList).map((key: string) => {
+              options={Object.keys(rateList).map((key: string) => {
                 const month = key.split('_')[1]
 
-                return (
-                    <Select.Option title={`${month}months - ${rateList[key] * 100}%`} key={key}  value={key} >
-                      {`${month} months-${rateList[key] * 100}%`}
-                    </Select.Option>
-                )
-              })
-            }
+                return {label: `${month}months - ${rateList[key] * 100}%`, value: key, key}
+
+              })}
+          >
+            {/*{*/}
+            {/*  Object.keys(rateList).map((key: string) => {*/}
+            {/*    const month = key.split('_')[1]*/}
+
+            {/*    return (*/}
+            {/*        <Select.Option title={`${month}months - ${rateList[key] * 100}%`} key={key}  value={key} >*/}
+            {/*          {`${month} months-${rateList[key] * 100}%`}*/}
+            {/*        </Select.Option>*/}
+            {/*    )*/}
+            {/*  })*/}
+            {/*}*/}
           </Select>
         </div>
         <p className={styles.stakeTitle}>STAKING REWARDS</p>

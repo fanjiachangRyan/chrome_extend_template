@@ -2,6 +2,7 @@ import styles from './index.less'
 import {useEffect, useState} from "react";
 import {useRequest} from "ahooks";
 import {
+  connect,
   getBalanceByAddress,
   getCurrentAccount,
   getDelegationAmount,
@@ -33,8 +34,9 @@ const Home = () => {
   const getCurrentAccountAction = useRequest(() => getCurrentAccount(), {
     ready: true,
     refreshDeps: [],
-    onSuccess: (res: any) => {
+    onSuccess:async (res: any) => {
       setCurrentAccount(() => res)
+      await connect()
       getBalanceByAddressAction.run(res.address || '')
     }
   })

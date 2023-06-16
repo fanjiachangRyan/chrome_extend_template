@@ -47,32 +47,10 @@ const Mnemonic = () => {
             let newStr = values.replace(/\r\n/g," ")
 
             newStr = newStr.replace(/\n/g," ");
-            console.log(newStr.split(' '))
             setMnemonic(() => newStr.split(' '))
-            // setMnemonic((prev: any[]) => {
-            //   prev[index] = e.target.value
-            //
-            //   return [...prev]
-            // })
+
 
           }} style={{width: '100%', height: 150}}/>
-          {/*{*/}
-          {/*  mnemonic.map((item: any, index: number) => (*/}
-          {/*      <Input*/}
-          {/*          className={styles.mnemonics_item}*/}
-          {/*          key={index}*/}
-          {/*          prefix={<Prefix number={index + 1}/>}*/}
-          {/*          value={item}*/}
-          {/*          onChange={(e: any) => {*/}
-          {/*            setMnemonic((prev: any[]) => {*/}
-          {/*              prev[index] = e.target.value*/}
-
-          {/*              return [...prev]*/}
-          {/*            })*/}
-          {/*          }}*/}
-          {/*      />*/}
-          {/*  ))*/}
-          {/*}*/}
         </div>
 
         <Button loading={loading} className={styles.confirm} onClick={() => {

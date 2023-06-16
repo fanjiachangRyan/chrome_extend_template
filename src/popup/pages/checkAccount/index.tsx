@@ -31,7 +31,6 @@ const CheckAccount = () => {
       const {lockTime = ''} = await storage.get(['lockTime'])
       const current = moment(new Date()).unix()
 
-      console.log(current, (lockTime + 60 * 15))
       if (current >= (lockTime + 60 * 15)) {
         return navigator('/unlock')
       }

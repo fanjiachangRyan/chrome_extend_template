@@ -21,7 +21,6 @@ export const getReward = async (validatorAddress: string) => {
       gas: String(gas_limit),
     }
 
-    console.log('value-->', value)
     return await client.sendMsgWithdrawDelegatorReward({value, fee, memo: ''})
   } catch (error) {
     return Promise.reject(error)

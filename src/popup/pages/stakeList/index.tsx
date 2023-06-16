@@ -11,7 +11,7 @@ import {
 import {useRequest} from "ahooks";
 import {useState} from "react";
 import Layout from "@/popup/components/layout";
-import {formatCountByDenom} from "@/api/utils";
+import {formatCountByDenom, math} from "@/api/utils";
 import app from '@/assets/images/app.png'
 import moment from "moment";
 
@@ -40,8 +40,7 @@ const Stake = () => {
     onSuccess: (res: any) => {
       const {rewards = []} = res
       const _reward: any = rewards[0] ?? {}
-      const rs = _reward.amount
-      console.log('rs-->', rs)
+      const rs = _reward.amount ?? '0'
 
       setRewards(rs)
     }
@@ -117,30 +116,30 @@ const Stake = () => {
               </div>
             </div>
           </div>
-          {delegation?.delegation?.unKycAmount != '0' && (
+          {(delegation?.delegation?.unKycAmount != '0' || delegation?.delegation?.unmovable !== '1000000') && (
               <div className={styles.staking} onClick={() => navigator('/handleStake', {
-            state: {
-              type: 'flexible',
-              isKyc: false,
-              title: 'Pool Staking'
-            }
-          })}>
-            <div className={styles.staking_fixedDetail}>
-              <div className={styles.staking_fixedDetail_info}>
-                <img src={app} alt=""/>
-                <div className={styles.staking_fixedDetail_info_detail}>
-                  <p className={styles.staking_fixedDetail_info_detail_name}>Pool Staking</p>
-                  <p className={styles.staking_fixedDetail_info_detail_desc}>Starts Earning</p>
+                state: {
+                  type: 'flexible',
+                  isKyc: false,
+                  title: 'Pool Staking'
+                }
+              })}>
+                <div className={styles.staking_fixedDetail}>
+                  <div className={styles.staking_fixedDetail_info}>
+                    <img src={app} alt=""/>
+                    <div className={styles.staking_fixedDetail_info_detail}>
+                      <p className={styles.staking_fixedDetail_info_detail_name}>Pool Staking</p>
+                      <p className={styles.staking_fixedDetail_info_detail_desc}>Starts Earning</p>
+                    </div>
+                  </div>
+                  <div className={styles.staking_fixedDetail_count}>
+                    <p className={styles.staking_fixedDetail_count_long}>
+                      {formatCountByDenom(delegation?.balance?.denom, delegation?.delegation?.unKycAmount || '0').amount}
+                      <span>MEC</span>
+                    </p>
+                  </div>
                 </div>
               </div>
-              <div className={styles.staking_fixedDetail_count}>
-                <p className={styles.staking_fixedDetail_count_long}>
-                  {formatCountByDenom(delegation?.balance?.denom, delegation?.delegation?.unKycAmount || '0').amount}
-                  <span>MEC</span>
-                </p>
-              </div>
-            </div>
-          </div>
           )}
           {
               (delegation.delegation?.unmovable == '1000000') && <div className={styles.staking}
@@ -161,7 +160,8 @@ const Stake = () => {
                 </div>
                 <div className={styles.staking_fixedDetail_count}>
                   <p className={styles.staking_fixedDetail_count_long}>
-                    {formatCountByDenom(delegation?.balance?.denom, delegation?.delegation?.amount || '0').amount}
+                    {/*{formatCountByDenom(delegation?.balance?.denom,   delegation?.delegation?.amount || '0').amount}*/}
+                    {formatCountByDenom(delegation?.balance?.denom, math.add(delegation?.delegation?.amount, 1000000)).amount}
                     <span>MEC</span>
                   </p>
                 </div>
@@ -174,14 +174,23 @@ const Stake = () => {
               const principal = formatCountByDenom(item.principal.denom, item.principal.amount) ?? {}
               const interest = formatCountByDenom(item.interest.denom, item.interest.amount)
               const timeOffset = new Date().getTimezoneOffset()
-              const endTimeStamp = moment(end_time).utcOffset(-timeOffset).unix()
-              const current = moment(new Date()).unix()
-              const long = current - endTimeStamp
+              const endTimeStamp = moment(end_time).utcOffset(-timeOffset)
+              const current = moment(new Date())
+
+
+              const long = endTimeStamp.diff(current, 'second')
 
               const day = parseInt(`${long / (60 * 60 * 24)}`)
               const hour = parseInt(`${long % (60 * 60 * 24) / 3600}`)
-              const min = parseInt(`${long % 60}`)
-              const times = long > 0 ? `in ${day > 0 ? `${day} days` : ''} ${hour > 0 ? `${hour} hours` : ''} ${min > 0 ? `${min} mins` : ''}` : ''
+              let times = ''
+
+              if (long > 0) {
+                if (day > 0 || hour > 0) {
+                  times = `in ${day > 0 ? `${day} days` : ''} ${hour > 0 ? `${hour} hours` : ''}`
+                } else {
+                  times = `in 1 hour`
+                }
+              }
 
               return (
                   <div className={styles.staking} key={item.id}

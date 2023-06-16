@@ -48,7 +48,6 @@ const Send = () => {
       navigator('/transactionDetail', {state: {hash: res.transactionHash}})
     },
     onError: (error: any) => {
-      console.log(error)
       message.error(error || '')
     }
   })

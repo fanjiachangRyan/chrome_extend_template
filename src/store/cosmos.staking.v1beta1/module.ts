@@ -413,7 +413,6 @@ export const txClient = ({signer, addr}: TxClientOptions = {
       }
       try {
         const {address} = (await signer.getAccounts())[0];
-        console.log('addr-->', addr, 'singer-->', signer)
         const signingClient = await SigningStargateClient.connectWithSigner(addr, signer, {registry});
         let msg = this.msgDoFixedDeposit({value: MsgDoFixedDeposit.fromPartial(value)})
         return await signingClient.signAndBroadcast(address, [msg], fee ? fee : defaultFee, memo)

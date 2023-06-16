@@ -1,6 +1,47 @@
 import {getCurrentAccount} from "@/api/index";
 import {DirectSecp256k1HdWallet, DirectSecp256k1Wallet} from '@cosmjs/proto-signing'
-import {ClientAddrType, PREFIX, setClientAddrType} from "@/config/define";
+import {PREFIX} from "@/config/define";
+import { create, all } from 'mathjs'
+
+const mathjs = create(all);
+mathjs.config({ number: 'BigNumber'});
+
+export const math = {
+  // 加
+  add(num1: any,num2: any){
+    if (!num1 || num1 === 'undefined') num1 = 0
+    if (!num2 || num2 === 'undefined') num2 = 0
+    const rs: any = mathjs.add(mathjs.bignumber(num1),mathjs.bignumber(num2))
+
+    return rs.toFixed(6).toString()
+  },
+  // 乘
+  multiply(num1: any,num2: any){
+    if (!num1 || num1 === 'undefined') num1 = 0
+    if (!num2 || num2 === 'undefined') num2 = 0
+    const rs: any =  mathjs.multiply(mathjs.bignumber(num1),mathjs.bignumber(num2))
+
+    return rs.toString();
+  },
+  // 减
+  subtract(num1: any,num2: any){
+    if (!num1 || num1 === 'undefined') num1 = 0
+    if (!num2 || num2 === 'undefined') num2 = 0
+    const rs: any =  mathjs.subtract(mathjs.bignumber(num1),mathjs.bignumber(num2))
+
+    return rs.toFixed(6).toString()
+  },
+  // 除
+  divide(num1: any,num2: any){
+    if (!num1 || num1 === 'undefined') num1 = 0
+    if (!num2 || num2 === 'undefined') num2 = 0
+
+    const rs: any =  mathjs.divide(mathjs.bignumber(num1),mathjs.bignumber(num2))
+
+    return rs.toFixed(6).toString()
+  }
+}
+
 
 const customStorage = {
   get: function (keys: string[], callback: (v: any) => void) {
@@ -93,20 +134,69 @@ interface FormatCountByDenomFn {
   ): any
 }
 
+export const formatAmount = (amount: string, addLength = 6) => {
+  const amountArr = amount.split('.')
+  let floatNumber = amountArr[1] ?? ''
+  let intNumber = amountArr[1]
+  if (floatNumber) {
+    if (floatNumber.length >= addLength) {
+      const floatNumberArr = floatNumber.split('')
+      floatNumberArr.splice(addLength, 0, '.')
+      floatNumber = floatNumberArr.join('')
+    } else {
+      const addArr = new Array(addLength - floatNumber.length).fill(0)
+      floatNumber = `${floatNumber}${addArr.join('')}`
+    }
+  }
+  if (intNumber == '0') {
+    intNumber = ''
+  }
+
+  return `${intNumber}${floatNumber}`
+}
+
 export const formatCountByDenom: FormatCountByDenomFn = (denom = '', amount: any, isInt = false, amountCutLength = 6) => {
   const firstChar = denom.slice(0, 1) || ''
   let newAmount = '0'
-  if (!amount || amount == '0') return {denom, amount: '0'}
 
   let _amount: any = typeof amount === 'string' ? amount : `${amount}`
 
   if (firstChar.toUpperCase() === 'U') {
-    _amount = `${_amount * 1 / Math.pow(10, amountCutLength)}`
+    if (!amount || amount == '0') return {denom: denom.slice(1, denom.length).toUpperCase(), amount: '0'}
+
+    const _tempAmountArray = _amount.split('.')
+    let _intNumber = _tempAmountArray[0]
+
+    let _floatNumber = _tempAmountArray[1]
+    const _intNumberArr = _intNumber.split('')
+    if (_intNumberArr.length > amountCutLength) {
+      _intNumberArr.splice(-amountCutLength, 0, '.')
+      _intNumber = _intNumberArr.join('')
+    } else {
+      const tempZeroArr = new Array(amountCutLength - _intNumber.length).fill(0)
+      _intNumber = `0.${tempZeroArr.join('')}${_intNumber}`
+    }
+
+
+    _amount = `${_intNumber}${_floatNumber ?? ''}`
 
     const amountArr = _amount.split('.')
 
     if (amountArr[1]) {
-      newAmount = `${amountArr[0]}.${amountArr[1].slice(0, 6)}`
+      const cutFloatNumber = amountArr[1].slice(0, 6)
+      if (cutFloatNumber === '000000') {
+        newAmount = `${amountArr[0]}`
+      } else {
+        // newAmount = `${amountArr[0]}${ ? '': `.${cutFloatNumber}`}`
+        const floatArr = cutFloatNumber.split('')
+        floatArr.reverse()
+        const reverseFloatNumber = `${floatArr.join('') * 1}`
+        const reverseFloatNumberArr = reverseFloatNumber.split('')
+        reverseFloatNumberArr.reverse()
+        const newFloat = reverseFloatNumberArr.join('')
+        newAmount = `${amountArr[0]}.${newFloat}`
+      }
+
     } else {
       newAmount = _amount
     }

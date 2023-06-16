@@ -8,7 +8,7 @@ import {
   RequestAddrList
 } from "@/config/define";
 import {txClient} from "@/store/cosmos.bank.v1beta1/module";
-import {getWallet, storage} from "@/api/utils";
+import {getWallet, math, storage} from "@/api/utils";
 
 export const msgSend = async ({amount, toAddress, memo}: any) => {
   try {
@@ -23,7 +23,7 @@ export const msgSend = async ({amount, toAddress, memo}: any) => {
     const value: any = {
       fromAddress: account.address,
       toAddress: toAddress,
-      amount: [{denom: 'umec', amount: `${amount * 1000000}`}]
+      amount: [{denom: 'umec', amount: math.multiply(amount, 1000000)}]
     }
 
     const fee = {

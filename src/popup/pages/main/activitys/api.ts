@@ -17,7 +17,6 @@ export const getTransInfo = (address: string, current: number) => {
         })
       })
     } catch (e) {
-      console.log(e)
       reject(e)
     }
   })

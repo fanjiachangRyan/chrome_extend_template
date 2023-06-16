@@ -45,7 +45,7 @@ chrome.runtime.onMessage.addListener(async (request, _sender, sendResponse) => {
             account: account,
           },
           () => {
-            console.log('account--->', account)
+
           }
       )
     })

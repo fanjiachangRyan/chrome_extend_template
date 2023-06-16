@@ -58,7 +58,7 @@ const UnStakeFlexible = () => {
   return <Layout title={'Unstake'} loading={getDelegationAction.loading || getRewardsAction.loading || getAccountAction.loading}>
     <div className={styles.row}>
       <p className={styles.subject}>YOU STAKE</p>
-      <p className={styles.value}>{formatCountByDenom(delegationInfo.balance?.denom || '', (isKyc ? delegationInfo.delegation?.amount : delegationInfo.delegation?.unKycAmount) || '0').amount}
+      <p className={styles.value}>{formatCountByDenom(delegationInfo.balance?.denom || '', (isKyc ? `${Number(delegationInfo.delegation?.amount) + Number(delegationInfo.delegation?.unmovable)}` : delegationInfo.delegation?.unKycAmount) || '0').amount}
         <span>{formatCountByDenom(delegationInfo.balance?.denom || '', delegationInfo.balance?.amount || '0').denom}</span>
       </p>
     </div>
@@ -74,11 +74,11 @@ const UnStakeFlexible = () => {
         <span>{formatCountByDenom(delegationInfo.balance?.denom || '', delegationInfo.balance?.amount || '0').denom}</span>
       </p>
     </div>
-    {!!isKyc && <div className={styles.row}>
+    {!isKyc && <div className={styles.row}>
       <p className={styles.subject}>Your assets will be credited 7 days after canceling the staking delegation.</p>
     </div>}
     <div className={styles.amount}>
-      <InputNumber controls={false} value={amount} onChange={(number: any) => setAmount(number)} min={'0'}
+      <InputNumber controls={false} precision={6} value={amount} onChange={(number: any) => setAmount(number)} min={'0'}
                    max={formatCountByDenom(delegationInfo.balance?.denom || '', (isKyc ? delegationInfo.delegation?.amount : delegationInfo.delegation?.unKycAmount) || '0').amount}/>
     </div>
     <Button loading={loading} className={styles.unStake} onClick={() => {

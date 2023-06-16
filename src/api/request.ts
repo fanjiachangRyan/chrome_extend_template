@@ -12,7 +12,6 @@ instance.interceptors.request.use( (config: any) => config, error => console.log
 
 instance.interceptors.response.use((response: any) => {
   if (response.status !== 200) {
-    console.log('response-->', response)
     // todo error tips
     return Promise.reject();
   }

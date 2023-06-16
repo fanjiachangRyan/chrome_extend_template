@@ -37,7 +37,6 @@ const GetReward = () => {
     manual: true,
     onSuccess: (res: any) => {
       const {delegation_response = {}} = res
-
       setDelegation(() => delegation_response?.delegation ?? {})
     }
   })

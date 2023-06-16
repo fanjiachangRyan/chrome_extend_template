@@ -31,21 +31,12 @@ import StakeFlexible from "@/popup/pages/stakeFlexible";
 import UnStakeFlexible from "@/popup/pages/unStakeFlexible";
 import StakeResult from "@/popup/pages/stakeResult";
 import UnStakeResult from "@/popup/pages/unStakeResult";
-import {useEffect} from "react";
-import {disconnect} from "@/api/utils";
 import NetType from "@/popup/pages/netType";
 import StakeList from "@/popup/pages/stakeList";
 import GetReward from "@/popup/pages/getReward";
 
 const Router = () => {
-  useEffect(() => {
-    window.onerror = (e: any) => {
-      console.log('windowerror', e)
-    }
-    return () => {
-      disconnect()
-    }
-  }, [])
+
   return (
       <ConfigProvider theme={{
         token: {

@@ -33,7 +33,6 @@ const Setting = () => {
     ready: true,
     refreshDeps: [],
     onSuccess: (res: any) => {
-      console.log('getClientAddrType==>', res)
       const netObject = ClientAddrInfoList.find((item: any) => item.value == res) ?? {}
       setNetType(netObject.subject)
     }
