@@ -13,7 +13,7 @@ export const math = {
     if (!num2 || num2 === 'undefined') num2 = 0
     const rs: any = mathjs.add(mathjs.bignumber(num1),mathjs.bignumber(num2))
 
-    return rs.toFixed(6).toString()
+    return rs.toString()
   },
   // 乘
   multiply(num1: any,num2: any){
@@ -29,7 +29,7 @@ export const math = {
     if (!num2 || num2 === 'undefined') num2 = 0
     const rs: any =  mathjs.subtract(mathjs.bignumber(num1),mathjs.bignumber(num2))
 
-    return rs.toFixed(6).toString()
+    return rs.toString()
   },
   // 除
   divide(num1: any,num2: any){
@@ -38,7 +38,7 @@ export const math = {
 
     const rs: any =  mathjs.divide(mathjs.bignumber(num1),mathjs.bignumber(num2))
 
-    return rs.toFixed(6).toString()
+    return rs.toString()
   }
 }
 

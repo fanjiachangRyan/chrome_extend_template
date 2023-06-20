@@ -69,7 +69,7 @@ const GetReward = () => {
         </p>
       </div>
       <div className={styles.row}>
-        <p className={styles.subject}>Staking Rewards Eamed</p>
+        <p className={styles.subject}>Staking Rewards Earned</p>
         <p className={styles.value}>{reward.amount == 0 ? '0' : `${formatCountByDenom('umec', reward.amount).amount} MEC`}</p>
       </div>
       <div className={styles.row}>
