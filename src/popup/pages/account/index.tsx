@@ -80,8 +80,10 @@ const Account = () => {
                 }
 
                 storage.get(['accountList']).then(async ({accountList = []}: any) => {
-                  const idx = accountList.find(({address}: any) => address === currentAccount.address)
+                  const idx = accountList.findIndex(({address}: any) => address === currentAccount.address)
+
                   accountList.splice(idx, 1)
+
                   if (accountList.length) {
                     accountList[0].isActive = true
                     await storage.set({currentAccount: {...accountList[0]}})
