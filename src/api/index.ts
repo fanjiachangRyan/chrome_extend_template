@@ -300,6 +300,10 @@ export const getTransInfoByHash = async (hash: string) => {
   return await http.get(`/cosmos/tx/v1beta1/txs/${hash}`)
 }
 
+export const getTransDetailByHash = async (account, transaction_hash) => {
+  return await localHttp.get(`/me/transaction/getMsgDetail?account=${account}&transaction_hash=${transaction_hash}`)
+}
+
 export const getRewardByAddress = async (address: string) => {
   return await http.get(`/cosmos/distribution/v1beta1/rewards/${address}`)
 }
