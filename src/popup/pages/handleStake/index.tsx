@@ -5,11 +5,12 @@ import {useRequest} from "ahooks";
 import {getCurrentAccount, getDelegationAmount, getFixDepositDetail, getRewardByAddress} from "@/api";
 import {useState} from "react";
 import {formatCountByDenom} from "@/api/utils";
-import {Button, InputNumber, message} from "antd";
+import {Button, message} from "antd";
 import moment from "moment/moment";
 import define from "@/popup/define";
 import {useNavigate} from "react-router";
 import {sendMsgUnDeposit} from "./api";
+import useGetFee from "@/popup/hooks/getFee";
 
 const HandleStake = () => {
   const {state = {}} = useLocation()
@@ -22,6 +23,7 @@ const HandleStake = () => {
   const [delegationInfo, setDelegationInfo] = useState<any>({})
   const [rewards, setRewards] = useState<any>({})
   const navigator = useNavigate()
+  const {gas} = useGetFee()
 
   useRequest(() => getCurrentAccount(), {
     ready: true,
@@ -84,19 +86,12 @@ const HandleStake = () => {
     onSuccess: (res: any) => {
       if (res.code === 0) {
         message.success('Unstake success!')
-        return navigator('/unStakeResult', {
-          state: {
-            hash: res.transactionHash,
-            type: 'fixed',
-            amount: fixedInfo.principal?.amount
-          }
-        })
+        return navigator('/transactionDetail', {state: {hash: res.transactionHash, type: 'fixed'}})
       } else {
         message.error('Unstake failed')
       }
     }
   })
-
 
   return (
       <Layout title={type === 'flexible' ? title : 'Unstake MEC'}>
@@ -162,8 +157,7 @@ const HandleStake = () => {
                     if (type === 'flexible') {
                       return navigator('/unStakeFlexible', {state: {isKyc}})
                     }
-
-                    run({id: stakeId})
+                    run({id: stakeId, gas})
                   }}>Unstake Now</Button>
         </div>
       </Layout>

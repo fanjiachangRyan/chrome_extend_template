@@ -3,6 +3,7 @@ import {Tooltip} from "antd";
 import {cutStr, formatCountByDenom} from "@/api/utils";
 
 const MsgUndelegate = ({detail = {}}: any) => {
+
   return (
       <>
         <div className={styles.transInfo_item}>
@@ -20,7 +21,7 @@ const MsgUndelegate = ({detail = {}}: any) => {
         {
           !detail.is_kyc && <div className={styles.transInfo_item}>
             <p>Reward</p>
-            <span>{formatCountByDenom(detail.rewards?.denom, detail.rewards?.amount)} MEC</span>
+            <span>{formatCountByDenom(detail.rewards?.denom, detail.rewards?.amount).amount} MEC</span>
           </div>
         }
       </>

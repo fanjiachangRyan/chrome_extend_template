@@ -1,29 +1,35 @@
 import Layout from "@/popup/components/layout";
 import {useLocation} from "react-router-dom";
 import {useRequest} from "ahooks";
-import {getCurrentAccount, getTransDetailByHash, getTransInfoByHash} from "@/api";
+import {getCurrentAccount, getTransDetailByHash} from "@/api";
 import styles from './index.less'
 import success from '@/assets/images/success.png'
 import failed from '@/assets/images/failed.png'
 import {useState} from "react";
-import {cutStr, dealType, formatCountByDenom} from "@/api/utils";
-import {message, Tooltip} from "antd";
+import {dealType, formatCountByDenom} from "@/api/utils";
+import {message} from "antd";
 import Message from "@/popup/pages/transactionDetail/message";
 
 const TransactionDetail = () => {
   const {state = {}} = useLocation()
   const hash = state.hash
+  const isList = state.isList
   const [transInfo, setTransInfo] = useState<any>({})
+  const [isDelay, setIsDelay] = useState(true)
   const getCurrentAccountAction = useRequest(() =>getCurrentAccount(), {
     ready: true,
     refreshDeps: [],
     onSuccess: (res: any) => {
-      run(res.address, hash)
+      setTimeout(() => {
+        run(res.address, hash)
+        setIsDelay(false)
+      }, isList ? 0 : 6000)
     }
   })
 
   const {loading, run} = useRequest(getTransDetailByHash, {
     manual: true,
+
     onSuccess: (res: any) => {
       if (res.code !== 200) {
         return message.error(res.msg)
@@ -34,7 +40,7 @@ const TransactionDetail = () => {
   })
 
   return (
-      <Layout title={'Transaction Detail'} loading={loading || getCurrentAccountAction.loading}>
+      <Layout title={'Transaction Detail'} loading={loading || getCurrentAccountAction.loading || isDelay}>
         <div className={styles.result}>
           <img src={transInfo.success ? success : failed}/>
         </div>
@@ -43,7 +49,7 @@ const TransactionDetail = () => {
             <span>{dealType(transInfo?.type)}</span>
             <p>{transInfo.amount ? `${formatCountByDenom(transInfo.amount?.denom, transInfo.amount.amount).amount} MEC` : ''}</p>
           </div>
-          <Message type={transInfo.type} detail={transInfo.extends}/>
+          <Message type={transInfo.type ?? ''} detail={transInfo.extends ?? {}}/>
           <div className={styles.transInfo_item}>
             <p>Gas Fees</p>
             <span>{formatCountByDenom(transInfo?.fee?.amount?.[0]?.denom, transInfo?.fee?.amount?.[0]?.amount).amount} MEC</span>

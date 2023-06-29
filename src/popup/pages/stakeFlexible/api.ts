@@ -1,8 +1,8 @@
-import {ClientAddrType, gas_fee, gas_limit, PREFIX, RequestAddrList} from "@/config/define";
+import {ClientAddrType, gas_fee, gas_limit, gas_price, PREFIX, RequestAddrList} from "@/config/define";
 import {txClient} from "@/store/cosmos.staking.v1beta1/module";
 import {getWallet, math, storage} from "@/api/utils";
 
-export const sendMsgStake = async ({amount, validatorAddress, memo}: any) => {
+export const sendMsgStake = async ({amount, validatorAddress, memo, gas}: any) => {
   try {
     const wallet = await getWallet()
 
@@ -18,10 +18,9 @@ export const sendMsgStake = async ({amount, validatorAddress, memo}: any) => {
       amount: {denom: 'umec', amount: math.multiply(amount, 1000000)}
     }
 
-
     const fee = {
-      amount: [{denom: 'umec', amount: `${gas_fee}`}],
-      gas: String(gas_limit),
+      amount: [{denom: 'umec', amount: `${(gas * gas_price).toFixed(0)}`}],
+      gas: String(gas),
     }
 
     return  await client.sendMsgDelegate({value, fee, memo })

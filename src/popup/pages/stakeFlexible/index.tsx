@@ -10,9 +10,10 @@ import {
 import {useState} from "react";
 import {formatCountByDenom} from "@/api/utils";
 import {Button, InputNumber, message} from "antd";
-import {gas_fee} from "@/config/define";
+import {gas_fee, gas_price} from "@/config/define";
 import {sendMsgStake} from "./api";
 import {useNavigate} from "react-router";
+import useGetFee from "@/popup/hooks/getFee";
 
 
 const StakeFlexible = () => {
@@ -21,6 +22,7 @@ const StakeFlexible = () => {
   const [flexibleRate, setFlexibleRate] = useState<number>(0)
   const [delegationInfo, setDelegationInfo] = useState<any>({})
   const navigator = useNavigate()
+  const {gas} = useGetFee()
 
   useRequest(() => getCurrentAccount(), {
     ready: true,
@@ -95,7 +97,7 @@ const StakeFlexible = () => {
           </div>
           <p className={styles.inputDesc}>Staking Rewards Start in 24 hours</p>
           <p className={styles.gasFees}>Gas
-            Fees: {formatCountByDenom('umec', `${gas_fee}`).amount} {formatCountByDenom('umec', `${gas_fee}`).denom}</p>
+            Fees: {formatCountByDenom('umec', `${gas * gas_price}`).amount} MEC</p>
         </div>
         <p className={styles.stakeTitle}>STAKING REWARDS</p>
         <p className={styles.stakeRewardsDesc}>
@@ -107,7 +109,8 @@ const StakeFlexible = () => {
           run({
             amount,
             feeAmount: gas_fee,
-            validatorAddress: delegationInfo.delegation?.validator_address
+            validatorAddress: delegationInfo.delegation?.validator_address,
+            gas
           })
         }}>Stake Now</Button>
       </Layout>

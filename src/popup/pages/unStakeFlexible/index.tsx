@@ -8,6 +8,7 @@ import {useState} from "react";
 import {Button, InputNumber, message} from "antd";
 import {sendMsgUnDelegate} from './api'
 import {useLocation, useNavigate} from "react-router";
+import useGetFee from "@/popup/hooks/getFee";
 
 const UnStakeFlexible = () => {
   const [delegationInfo, setDelegationInfo] = useState<any>({})
@@ -16,6 +17,7 @@ const UnStakeFlexible = () => {
   const navigator = useNavigate()
   const {state = {}} = useLocation()
   const {isKyc} = state
+  const {gas} = useGetFee()
 
   const getAccountAction = useRequest(() => getCurrentAccount(), {
     ready: true,
@@ -48,7 +50,7 @@ const UnStakeFlexible = () => {
     onSuccess: (res: any) => {
       if (res.code === 0) {
         message.success('Unstake success!')
-        return navigator('/unStakeResult', {state: {hash: res.transactionHash, type: 'flexible'}})
+        return navigator('/transactionDetail', {state: {hash: res.transactionHash, type: 'flexible'}})
       } else {
         message.error('Unstake failed')
       }
@@ -82,7 +84,7 @@ const UnStakeFlexible = () => {
                    max={formatCountByDenom(delegationInfo.balance?.denom || '', (isKyc ? delegationInfo.delegation?.amount : delegationInfo.delegation?.unKycAmount) || '0').amount}/>
     </div>
     <Button loading={loading} className={styles.unStake} onClick={() => {
-      run({amount, validatorAddress: delegationInfo.delegation?.validator_address, isKyc})
+      run({amount, validatorAddress: delegationInfo.delegation?.validator_address, isKyc, gas})
     }}>Unstake Now</Button>
   </Layout>
 }

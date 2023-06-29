@@ -5,12 +5,12 @@ import {
   getClientAddrType,
   PREFIX,
   ClientAddrType,
-  RequestAddrList
+  RequestAddrList, gas_price
 } from "@/config/define";
 import {txClient} from "@/store/cosmos.bank.v1beta1/module";
 import {getWallet, math, storage} from "@/api/utils";
 
-export const msgSend = async ({amount, toAddress, memo}: any) => {
+export const msgSend = async ({amount, toAddress, memo, gas}: any) => {
   try {
     const wallet = await getWallet()
 
@@ -27,9 +27,10 @@ export const msgSend = async ({amount, toAddress, memo}: any) => {
     }
 
     const fee = {
-      amount: [{denom: 'umec', amount: `${gas_fee}`}],
-      gas: String(gas_limit),
+      amount: [{denom: 'umec', amount: `${(gas * gas_price).toFixed(0)}`}],
+      gas: String(gas),
     }
+
     return await client.sendMsgSend({value, fee, memo})
   } catch (error) {
     return Promise.reject(error)

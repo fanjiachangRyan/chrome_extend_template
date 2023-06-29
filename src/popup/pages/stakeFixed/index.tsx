@@ -10,9 +10,10 @@ import {
 import {useState} from "react";
 import {formatCountByDenom} from "@/api/utils";
 import {Button, InputNumber, message, Select} from "antd";
-import {gas_fee} from "@/config/define";
+import {gas_fee, gas_price} from "@/config/define";
 import {sendMsgFixed} from "@/popup/pages/stakeFixed/api";
 import {useNavigate} from "react-router";
+import useGetFee from "@/popup/hooks/getFee";
 
 const StakeFixed = () => {
   const [maxRate, setMaxRate] = useState<string>('0%')
@@ -22,6 +23,7 @@ const StakeFixed = () => {
   const [rateList, setRateList] = useState<any>({})
   const [currentRate, setCurrentRate] = useState<string>('')
   const navigator = useNavigate()
+  const {gas} = useGetFee()
 
   useRequest(() => getCurrentAccount(), {
     ready: true,
@@ -80,7 +82,7 @@ const StakeFixed = () => {
     onSuccess: (res: any) => {
       if (res.code === 0) {
         message.success('Stake success!')
-        return navigator('/stakeResult', {state: {hash: res.transactionHash, type: 'fixed', amount}})
+        return navigator('/transactionDetail', {state: {hash: res.transactionHash, type: 'fixed'}})
       } else {
         message.error('Stake failed')
       }
@@ -113,7 +115,7 @@ const StakeFixed = () => {
           </div>
           <p className={styles.inputDesc}>Staking Rewards Start in 24 hours</p>
           <p className={styles.gasFees}>Gas
-            Fees: {formatCountByDenom('umec', `${gas_fee}`).amount} {formatCountByDenom('umec', `${gas_fee}`).denom}</p>
+            Fees: {formatCountByDenom('umec', `${gas * gas_price}`).amount} MEC</p>
           <p className={styles.selectSubject}>APR</p>
           <Select
               className={styles.rateSelect}
@@ -147,7 +149,7 @@ const StakeFixed = () => {
         </p>
         <Button loading={loading} className={styles.stakeButton} onClick={() => {
           if (!amount || !currentRate) return message.warning('Amount & APR can not be empty!')
-          run({amount, month: currentRate})
+          run({amount, month: currentRate, gas})
         }}>Stake Now</Button>
       </Layout>
   )

@@ -49,7 +49,7 @@ const Activitys = () => {
 
             return (
                 <div className={styles.item} key={item.transaction_hash} onClick={() => {
-                  navigator('/transactionDetail', {state: {hash: item.transaction_hash}})
+                  navigator('/transactionDetail', {state: {hash: item.transaction_hash, isList: true}})
                 }}>
                   <img className={styles.item_status} src={item.success ? success : failed}
                        alt=""/>

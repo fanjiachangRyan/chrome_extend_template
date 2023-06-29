@@ -5,9 +5,10 @@ import {useRequest} from "ahooks";
 import {getBalanceByAddress, getCurrentAccount} from "@/api";
 import {formatCountByDenom} from "@/api/utils";
 import {Button, Input, InputNumber, message} from "antd";
-import {gas_fee} from "@/config/define";
+import {gas_fee, gas_price} from "@/config/define";
 import {useNavigate} from "react-router";
 import {msgSend} from "@/popup/pages/send/api";
+import useGetFee from "@/popup/hooks/getFee";
 
 
 const Send = () => {
@@ -16,6 +17,7 @@ const Send = () => {
   const [amount, setAmount] = useState<string>('0')
   const [toAddress, setToAddress] = useState<string>('')
   const navigator = useNavigate()
+  const {gas} = useGetFee()
 
   useRequest(() => getBalanceByAddress(currentAccount.address), {
     ready: !!currentAccount.address,
@@ -74,11 +76,11 @@ const Send = () => {
               min={'0'}
           />
         </div>
-        <p className={styles.fees}>fees: {gas_fee / 1000000} <span>MEC</span></p>
+        <p className={styles.fees}>fees: {((gas ?? 0) * gas_price / 1000000).toFixed(6)} <span>MEC</span></p>
         <Button
             loading={loading} className={styles.send}
             onClick={() => {
-              run({amount, toAddress, memo: ''})
+              run({amount, toAddress, memo: '', gas})
             }}>Send</Button>
       </Layout>
   )

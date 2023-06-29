@@ -324,3 +324,14 @@ export const getDelegateRate = async () => {
   return await localHttp.get(`/me/delegation/getParams`)
 }
 
+export const getTransitionList = async (page_number = 1): Promise<any> => {
+  const res: any = await localHttp.get(`/me/transaction/transactions?page_number=${page_number}&page_size=20`)
+
+  return new Promise((resolve, reject) => {
+    if (res.code !== 200) {
+      return reject(res)
+    }
+
+    resolve(res)
+  })
+}
