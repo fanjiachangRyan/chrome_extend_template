@@ -1,7 +1,7 @@
 import Layout from "@/popup/components/layout";
 import {useLocation} from "react-router-dom";
 import {useRequest} from "ahooks";
-import {getCurrentAccount, getTransDetailByHash} from "@/api";
+import {getCurrentAccount, getTransDetailAfterTrans, getTransDetailByHash} from "@/api";
 import styles from './index.less'
 import success from '@/assets/images/success.png'
 import failed from '@/assets/images/failed.png'
@@ -15,21 +15,31 @@ const TransactionDetail = () => {
   const hash = state.hash
   const isList = state.isList
   const [transInfo, setTransInfo] = useState<any>({})
-  const [isDelay, setIsDelay] = useState(true)
   const getCurrentAccountAction = useRequest(() =>getCurrentAccount(), {
     ready: true,
     refreshDeps: [],
     onSuccess: (res: any) => {
-      setTimeout(() => {
+      if (isList) {
         run(res.address, hash)
-        setIsDelay(false)
-      }, isList ? 0 : 6000)
+      } else {
+        getTransDetailByHashAfterTrans.run(res.address, hash)
+      }
+    }
+  })
+
+  const getTransDetailByHashAfterTrans = useRequest(getTransDetailAfterTrans, {
+    manual: true,
+    onSuccess: (res: any) => {
+      if (res.code !== 200) {
+        return message.error(res.msg)
+      }
+
+      setTransInfo(() => res.data)
     }
   })
 
   const {loading, run} = useRequest(getTransDetailByHash, {
     manual: true,
-
     onSuccess: (res: any) => {
       if (res.code !== 200) {
         return message.error(res.msg)
@@ -40,7 +50,7 @@ const TransactionDetail = () => {
   })
 
   return (
-      <Layout title={'Transaction Detail'} loading={loading || getCurrentAccountAction.loading || isDelay}>
+      <Layout title={'Transaction Detail'} loading={loading || getCurrentAccountAction.loading || getTransDetailByHashAfterTrans.loading}>
         <div className={styles.result}>
           <img src={transInfo.success ? success : failed}/>
         </div>

@@ -22,7 +22,7 @@ function useGetFee() {
         return prev
       }, 0)
 
-      const avage: number = parseInt(`${total / 18 * 1.4}`)
+      const avage: number = parseInt(`${total / 18 * 1.7}`)
 
       setGas(avage)
     }

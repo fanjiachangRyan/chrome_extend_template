@@ -1,4 +1,4 @@
-import {BrowserRouter, HashRouter, Navigate, Route, Routes} from "react-router-dom";
+import {HashRouter, Navigate, Route, Routes} from "react-router-dom";
 import Account from "@/popup/pages/account";
 import styles from './index.less'
 import {ConfigProvider} from "antd";
@@ -30,7 +30,6 @@ import StakeFixed from "@/popup/pages/stakeFixed";
 import StakeFlexible from "@/popup/pages/stakeFlexible";
 import UnStakeFlexible from "@/popup/pages/unStakeFlexible";
 import StakeResult from "@/popup/pages/stakeResult";
-// import UnStakeResult from "@/popup/pages/unStakeResult";
 import NetType from "@/popup/pages/netType";
 import StakeList from "@/popup/pages/stakeList";
 import GetReward from "@/popup/pages/getReward";
@@ -77,7 +76,6 @@ const Router = () => {
               <Route path={'/handleStake'} element={<HandleStake/>}/>
               <Route path={'/unStakeFlexible'} element={<UnStakeFlexible/>}/>
               <Route path={'/stakeResult'} element={<StakeResult/>}/>
-              {/*<Route path={'/unStakeResult'} element={<UnStakeResult/>}/>*/}
               <Route path={'/netType'} element={<NetType />}/>
               <Route path={'/getReward'} element={<GetReward />}/>
               <Route path="*" element={<NoMatch/>}/>

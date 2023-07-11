@@ -152,13 +152,16 @@ const HandleStake = () => {
               navigator('/getReward', {state: {isKyc}})
             }}>Get Reward</Button>
           }
-          <Button loading={loading} className={styles.unStake} style={{width: type === 'flexible' ? '45%' : '100%'}}
-                  onClick={() => {
-                    if (type === 'flexible') {
-                      return navigator('/unStakeFlexible', {state: {isKyc}})
-                    }
-                    run({id: stakeId, gas})
-                  }}>Unstake Now</Button>
+          <Button
+              loading={loading}
+              className={styles.unStake}
+              style={{width: type === 'flexible' ? '45%' : '100%'}}
+              onClick={() => {
+                if (type === 'flexible') {
+                  return navigator('/unStakeFlexible', {state: {isKyc}})
+                }
+                run({id: stakeId, gas})
+              }}>Unstake Now</Button>
         </div>
       </Layout>
   )

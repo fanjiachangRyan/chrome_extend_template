@@ -67,7 +67,7 @@ const StakeFlexible = () => {
     onSuccess: (res: any) => {
       if (res.code === 0) {
         message.success('Stake success!')
-        return navigator('/stakeResult', {state: {hash: res.transactionHash, type: 'flexible'}})
+        return navigator('/transactionDetail', {state: {hash: res.transactionHash}})
       } else {
         message.error('Stake failed')
       }

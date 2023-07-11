@@ -8,6 +8,7 @@ import { fromString} from 'uint8arrays/from-string'
 import { toString } from 'uint8arrays/to-string'
 import http from './request'
 import localHttp from './localRequest'
+import account from "@/popup/pages/account";
 
 export const setUrl = (url: string) => {
   http.defaults.baseURL = `${url}:1317`
@@ -302,6 +303,10 @@ export const getTransInfoByHash = async (hash: string) => {
 
 export const getTransDetailByHash = async (account, transaction_hash) => {
   return await localHttp.get(`/me/transaction/getMsgDetail?account=${account}&transaction_hash=${transaction_hash}`)
+}
+
+export const getTransDetailAfterTrans = async (account, transaction_hash) => {
+  return await localHttp.get(`/me/transaction/getMsgDetailFromChain?account=${account}&transaction_hash=${transaction_hash}`)
 }
 
 export const getRewardByAddress = async (address: string) => {
