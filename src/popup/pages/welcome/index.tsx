@@ -8,8 +8,9 @@ import {useEffect} from "react";
 import {storage} from "@/api/utils";
 import {ClientAddrType, RequestAddrList} from "@/config/define";
 import {setUrl} from "@/api";
+import logo from '@/assets/images/app.png'
 
-const Welcome = (props: any) => {
+const Welcome = () => {
   const navigator = useNavigate()
 
   useEffect(() => {
@@ -23,7 +24,7 @@ const Welcome = (props: any) => {
   return (
       <Layout visibleBack>
         <div className={styles.logo}>
-          <MediumOutlined/>
+          <img src={logo} alt="" />
         </div>
         <p className={styles.welcome}>Welcome to ME</p>
         <div className={styles.buttons}>

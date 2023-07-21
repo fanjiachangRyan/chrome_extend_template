@@ -1,12 +1,12 @@
 {
   "manifest_version": 3,
-  "name": "ME",
+  "name": "ME Pass",
   "version": "1.0",
-  "description": "ME extension",
+  "description": "ME Pass",
   "action": {
     "default_popup": "index.html",
     "default_icon": "/images/app.png",
-    "default_title": "ME Wallet"
+    "default_title": "ME Pass"
   },
   "background": {
     "service_worker": "static/js/background.js"
@@ -14,8 +14,6 @@
   "content_scripts": [
     {
       "matches": [
-        "http://*/*",
-        "https://*/*",
         "http://localhost:8000/",
         "http://localhost:8000/*",
         "http://192.168.0.207/",
