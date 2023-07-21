@@ -8,7 +8,6 @@ import { fromString} from 'uint8arrays/from-string'
 import { toString } from 'uint8arrays/to-string'
 import http from './request'
 import localHttp from './localRequest'
-import account from "@/popup/pages/account";
 
 export const setUrl = (url: string) => {
   http.defaults.baseURL = `${url}:1317`
@@ -28,7 +27,7 @@ const instanceME = (url: string) => {
 
 export const getAccount = async (): Promise<any> => {
   const cosmosInstance = await ME()
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
 
     storage.get(['currentAccount'], async ({ currentAccount }: any) => {
       const account = {
@@ -44,7 +43,7 @@ export const getAccount = async (): Promise<any> => {
       }
 
       try {
-        let privKey
+        let privKey: any
         if (currentAccount.priv) {
           privKey = Buffer.from(fromString(currentAccount.priv.slice(2), 'base16'))
         } else if (currentAccount.mnemonic) {
@@ -72,12 +71,12 @@ export const getAccount = async (): Promise<any> => {
 }
 
 export const getAccountList = (): Promise<any[]> => {
-  return new Promise(async(resolve, reject) => {
+  return new Promise(async(resolve) => {
     const cosmosInstance = await ME()
 
     storage.get(['accountList'], ({ accountList }) => {
       const list = accountList.map((item: any) => {
-        let privKey
+        let privKey: any
         if (item.priv) {
           privKey = Buffer.from(fromString(item.priv.slice(2), 'base16'))
         } else {
@@ -102,7 +101,7 @@ export const getAccountList = (): Promise<any[]> => {
 export const addAccount = async ({mnemonic = '', priv}: any) => {
   const cosmosInstance = await ME()
   try {
-    let privKey
+    let privKey: any
     if (priv) {
       privKey = Buffer.from(fromString(priv.slice(2), 'base16'))
     } else {
@@ -215,16 +214,13 @@ export const connect = async () => {
           from: 'popup',
           value: 'requestConnectConfirm',
           account: account,
-        },
-        async (result) => {
-
         }
     )
   })
 }
 
 export const getCurrentAccount = async () => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     storage.get(['currentAccount'], async ({ currentAccount }: any) => {
       const account = {
         address: '',
@@ -240,7 +236,7 @@ export const getCurrentAccount = async () => {
 
       try {
         const cosmosInstance = await ME()
-        let privKey
+        let privKey:any
         if (currentAccount.priv) {
           privKey = Buffer.from(fromString(currentAccount.priv.slice(2), 'base16'))
         } else if (currentAccount.mnemonic) {
@@ -281,7 +277,7 @@ export const getPassword = async () => {
 export const getBalanceByAddress = async (address: string) => {
   return await http.get(`/cosmos/bank/v1beta1/balances/${address}`)
 }
-export const getFixedDeposit = async (address: string, query_type = 'ALL_STATE') => {
+export const getFixedDeposit = async (address: string) => {
   return await http.get(`/cosmos/staking/v1beta1/fixed_deposit_by_acct/${address}/ALL_STATE`)
 }
 
@@ -301,11 +297,11 @@ export const getTransInfoByHash = async (hash: string) => {
   return await http.get(`/cosmos/tx/v1beta1/txs/${hash}`)
 }
 
-export const getTransDetailByHash = async (account, transaction_hash) => {
+export const getTransDetailByHash = async (account:string, transaction_hash: string) => {
   return await localHttp.get(`/me/transaction/getMsgDetail?account=${account}&transaction_hash=${transaction_hash}`)
 }
 
-export const getTransDetailAfterTrans = async (account, transaction_hash) => {
+export const getTransDetailAfterTrans = async (account:string, transaction_hash: string) => {
   return await localHttp.get(`/me/transaction/getMsgDetailFromChain?account=${account}&transaction_hash=${transaction_hash}`)
 }
 

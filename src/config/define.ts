@@ -12,7 +12,6 @@ export interface INetwork {
 }
 
 export const DOMAINS: string[] = [
-  'http://localhost:8000',
   'http://192.168.0.207',
   'http://118.175.0.246'
 ]

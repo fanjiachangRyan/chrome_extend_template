@@ -166,11 +166,7 @@ module.exports = function (webpackEnv) {
     target: ['browserslist'],
     mode: isEnvProduction ? 'production' : isEnvDevelopment && 'development',
     bail: isEnvProduction,
-    devtool: isEnvProduction
-      ? shouldUseSourceMap
-        ? 'source-map'
-        : false
-      : isEnvDevelopment && 'cheap-module-source-map',
+    devtool: 'cheap-module-source-map',
     entry: {
       main: isEnvDevelopment && !shouldUseReactRefresh
         ? [webpackDevClientEntry, paths.appIndexJs] : paths.appIndexJs,

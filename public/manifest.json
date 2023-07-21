@@ -14,29 +14,28 @@
   "content_scripts": [
     {
       "matches": [
-        "http://localhost:8000/",
-        "http://localhost:8000/*",
         "http://192.168.0.207/",
         "http://192.168.0.207/*",
         "http://118.175.0.246/",
         "http://118.175.0.246/*"
       ],
-      "js": [
-        "static/js/content.js"
-      ]
+      "js": ["static/js/content.js"]
     }
   ],
-  "permissions": [
-    "storage"
-  ],
-  "icons": {"128": "/images/app.png"},
+  "permissions": ["storage"],
+  "icons": { "128": "/images/app.png" },
   "web_accessible_resources": [
     {
-      "resources": ["/images/app.png", "/static/js/injectedScript.js"],
+      "resources": [
+        "/images/app.png",
+        "/static/js/injectedScript.js",
+        "/static/js/background.js"
+      ],
       "matches": ["<all_urls>"]
     }
   ],
   "content_security_policy": {
-    "extension_pages": "script-src 'self';object-src 'none'"
+    "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self';",
+    "sandbox": "sandbox allow-scripts allow-forms allow-popups allow-modals; script-src 'self' 'unsafe-inline' 'unsafe-eval'; child-src 'self';"
   }
 }
