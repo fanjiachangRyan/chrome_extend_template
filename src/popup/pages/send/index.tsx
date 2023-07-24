@@ -2,14 +2,12 @@ import styles from './index.less'
 import Layout from "@/popup/components/layout";
 import {useState} from "react";
 import {useRequest} from "ahooks";
-import {getBalanceByAddress, getCurrentAccount} from "@/api";
+import {getBalanceByAddress, getCurrentAccount, getGas} from "@/api";
 import {formatCountByDenom} from "@/api/utils";
 import {Button, Input, InputNumber, message} from "antd";
-import {gas_fee, gas_price} from "@/config/define";
+import {gas_price} from "@/config/define";
 import {useNavigate} from "react-router";
 import {msgSend} from "@/popup/pages/send/api";
-import useGetFee from "@/popup/hooks/getFee";
-
 
 const Send = () => {
   const [currentAccount, setCurrentAccount] = useState<any>({})
@@ -17,7 +15,17 @@ const Send = () => {
   const [amount, setAmount] = useState<string>('0')
   const [toAddress, setToAddress] = useState<string>('')
   const navigator = useNavigate()
-  const {gas} = useGetFee()
+  const [gas, setGas] = useState<number>(200000)
+
+  const getGasAction = useRequest(() => getGas({transaction_type: '/cosmos.bank.v1beta1.MsgSend'}), {
+    ready: true,
+    refreshDeps: [],
+    onSuccess: (res: any) => {
+      const {data = 200000} = res ?? {} 
+    
+      setGas(parseInt(`${data * 1.2}`))
+    }
+  })
 
   useRequest(() => getBalanceByAddress(currentAccount.address), {
     ready: !!currentAccount.address,
@@ -78,7 +86,7 @@ const Send = () => {
         </div>
         <p className={styles.fees}>fees: {((gas ?? 0) * gas_price / 1000000).toFixed(6)} <span>MEC</span></p>
         <Button
-            loading={loading} className={styles.send}
+            loading={loading || getGasAction.loading} className={styles.send}
             onClick={() => {
               run({amount, toAddress, memo: '', gas})
             }}>Send</Button>

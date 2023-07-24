@@ -1,8 +1,4 @@
 import {
-  gas_fee,
-  gas_limit,
-  clientAddrList,
-  getClientAddrType,
   PREFIX,
   ClientAddrType,
   RequestAddrList, gas_price

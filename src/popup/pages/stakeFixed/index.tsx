@@ -5,15 +5,15 @@ import {
   getBalanceByAddress,
   getCurrentAccount,
   getDepositAnnualRateList,
-  getFixedDeposit
+  getFixedDeposit,
+  getGas
 } from "@/api";
 import {useState} from "react";
 import {formatCountByDenom} from "@/api/utils";
 import {Button, InputNumber, message, Select} from "antd";
-import {gas_fee, gas_price} from "@/config/define";
+import {gas_price} from "@/config/define";
 import {sendMsgFixed} from "@/popup/pages/stakeFixed/api";
 import {useNavigate} from "react-router";
-import useGetFee from "@/popup/hooks/getFee";
 
 const StakeFixed = () => {
   const [maxRate, setMaxRate] = useState<string>('0%')
@@ -23,7 +23,7 @@ const StakeFixed = () => {
   const [rateList, setRateList] = useState<any>({})
   const [currentRate, setCurrentRate] = useState<string>('')
   const navigator = useNavigate()
-  const {gas} = useGetFee()
+  const [gas, setGas] = useState<number>(200000)
 
   useRequest(() => getCurrentAccount(), {
     ready: true,
@@ -74,6 +74,16 @@ const StakeFixed = () => {
       const maxVal = _values.reduce((prev: number, item: any) => item > prev ? item : prev, 0)
 
       setMaxRate(() => `${maxVal * 100}%`)
+    }
+  })
+
+  const getGasAction = useRequest(() => getGas({transaction_type: '/cosmos.staking.v1beta1.MsgDoFixedDeposit'}), {
+    ready: true,
+    refreshDeps: [],
+    onSuccess: (res: any) => {
+      const {data = 200000} = res ?? {} 
+      
+      setGas(parseInt(`${data * 1.2}`))
     }
   })
 
@@ -147,7 +157,7 @@ const StakeFixed = () => {
         <p className={styles.stakeRewardsDesc}>
           The staked MEC starts earning reward at the end of the Epoch in which it was staked. The rewards will become available at the end of one full Epoch of staking.
         </p>
-        <Button loading={loading} className={styles.stakeButton} onClick={() => {
+        <Button loading={loading || getGasAction.loading} className={styles.stakeButton} onClick={() => {
           if (!amount || !currentRate) return message.warning('Amount & APR can not be empty!')
           run({amount, month: currentRate, gas})
         }}>Stake Now</Button>
