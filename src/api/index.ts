@@ -336,3 +336,7 @@ export const getTransitionList = async (page_number = 1): Promise<any> => {
     resolve(res)
   })
 }
+
+export const getGas = async (data: any): Promise<any> => {
+  return await localHttp.post('/me/transaction/getGasUsedByType', data)
+}

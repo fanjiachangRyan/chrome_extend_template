@@ -1,8 +1,8 @@
-import {ClientAddrType, gas_fee, gas_limit, PREFIX, RequestAddrList} from "@/config/define";
+import {ClientAddrType,gas_price, PREFIX, RequestAddrList} from "@/config/define";
 import {txClient} from "@/store/cosmos.distribution.v1beta1/module";
 import {getWallet, storage} from "@/api/utils";
 
-export const getReward = async (validatorAddress: string) => {
+export const getReward = async (validatorAddress = '', gas = 200000) => {
   try {
     const wallet = await getWallet()
 
@@ -17,8 +17,8 @@ export const getReward = async (validatorAddress: string) => {
     }
 
     const fee = {
-      amount: [{denom: 'umec', amount: `${gas_fee}`}],
-      gas: String(gas_limit),
+      amount: [{denom: 'umec', amount:  `${(gas * gas_price).toFixed(0)}`}],
+      gas: String(gas),
     }
 
     return await client.sendMsgWithdrawDelegatorReward({value, fee, memo: ''})

@@ -21,16 +21,13 @@ window.addEventListener(
               {
                 value: event.data.value,
                 origin: event.origin,
-              },
-              () => {}
+              }
           )
         } else if (event.data.value === 'requestDisconnect') {
           chrome.runtime.sendMessage(
               {
                 value: event.data.value,
                 origin: event.origin,
-              },
-              (res) => {
               }
           )
         }

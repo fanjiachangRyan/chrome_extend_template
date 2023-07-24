@@ -6,7 +6,7 @@ chrome.runtime.onMessage.addListener(async (request, _sender, sendResponse) => {
     const {connectStatus = false} = await storage.get(['connectStatus'])
 
     if (!connectStatus) {
-      chrome.windows.create({url: `${chrome.runtime.getURL('index.html')}`, type: 'popup', width: 350, height: 600})
+      chrome.windows?.create?.({url: `${chrome.runtime.getURL('index.html')}`, type: 'popup', width: 350, height: 600})
 
       return sendResponse({msg: `backgroundJS --->调起窗口${_sender.url}${_sender?.tab?.windowId}`})
     }
@@ -18,7 +18,6 @@ chrome.runtime.onMessage.addListener(async (request, _sender, sendResponse) => {
     await storage.set({connectStatus: false})
     // 断开连接
     const tab: any = await getCurrentTab()
-
     chrome.tabs.sendMessage(
         tab.id,
         {
