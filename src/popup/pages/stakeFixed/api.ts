@@ -1,7 +1,6 @@
-import {ClientAddrType, gas_fee, gas_limit, gas_price, PREFIX, RequestAddrList} from "@/config/define";
+import {ClientAddrType,  gas_price, PREFIX, RequestAddrList} from "@/config/define";
 import {txClient} from "@/store/cosmos.staking.v1beta1/module";
 import {getWallet, math, storage} from "@/api/utils";
-import {FixedDepositTerm} from "@/store/cosmos.staking.v1beta1/types/cosmos/staking/v1beta1/fixed_deposit";
 
 export const sendMsgFixed = async ({amount, month, memo = '', gas}: any) => {
   try {
