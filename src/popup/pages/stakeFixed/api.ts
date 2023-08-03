@@ -2,7 +2,7 @@ import {ClientAddrType,  gas_price, PREFIX, RequestAddrList} from "@/config/defi
 import {txClient} from "@/store/cosmos.staking.v1beta1/module";
 import {getWallet, math, storage} from "@/api/utils";
 
-export const sendMsgFixed = async ({amount, month, memo = '', gas}: any) => {
+export const sendMsgFixed = async ({amount, month, memo = ''}: any) => {
   try {
     const wallet = await getWallet()
 
@@ -27,12 +27,7 @@ export const sendMsgFixed = async ({amount, month, memo = '', gas}: any) => {
       term: (data[month] ?? -1)
     }
 
-    const fee = {
-      amount: [{denom: 'umec', amount: `${(gas * gas_price).toFixed(0)}`}],
-      gas: String(gas),
-    }
-
-    return await client.sendMsgDoFixedDeposit({value, fee, memo})
+    return await client.sendMsgDoFixedDeposit({value, memo})
   } catch (error) {
     return Promise.reject(error)
   }
