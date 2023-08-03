@@ -6,6 +6,7 @@ import {
   getCurrentAccount,
   getDelegateRate,
   getDelegationAmount,
+  getGas
 } from "@/api";
 import {useState} from "react";
 import {formatCountByDenom} from "@/api/utils";
@@ -21,6 +22,18 @@ const StakeFlexible = () => {
   const [flexibleRate, setFlexibleRate] = useState<number>(0)
   const [delegationInfo, setDelegationInfo] = useState<any>({})
   const navigator = useNavigate()
+  const [gas, setGas] = useState<number>(200000)
+
+
+  const getGasAction = useRequest(() => getGas({transaction_type: '/cosmos.staking.v1beta1.MsgDelegate'}), {
+    ready: true,
+    refreshDeps: [],
+    onSuccess: (res: any) => {
+      const {data = 200000} = res ?? {} 
+      
+      setGas(data)
+    }
+  })
 
   useRequest(() => getCurrentAccount(), {
     ready: true,
@@ -102,7 +115,7 @@ const StakeFlexible = () => {
           The staked MEC starts earning reward at the end of the Epoch in which it was staked. The rewards will become
           available at the end of one full Epoch of staking.
         </p>
-        <Button loading={loading} className={styles.stakeButton} onClick={() => {
+        <Button loading={loading || getGasAction.loading} className={styles.stakeButton} onClick={() => {
           if (!amount) return message.warning('Amount can not be empty!')
           run({
             amount,
