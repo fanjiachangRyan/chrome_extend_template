@@ -67,9 +67,6 @@ import { SVPair as typeSVPair } from "./types";
 import { SVPairs as typeSVPairs } from "./types";
 import { MsgBeginRedelegateResponse as typeMsgBeginRedelegateResponse } from "./types";
 import { MsgCancelUnbondingDelegationResponse as typeMsgCancelUnbondingDelegationResponse } from "./types";
-import { storage } from "@/api/utils";
-import { ClientAddrType, RequestAddrList } from "@/config/define";
-import { setUrl } from "@/api";
 
 export {
   MsgNewRegion,
