@@ -2,7 +2,7 @@ import styles from './index.less'
 import Layout from "@/popup/components/layout";
 import {useLocation} from "react-router-dom";
 import {useRequest} from "ahooks";
-import {getCurrentAccount, getDelegationAmount, getFixDepositDetail, getRewardByAddress, getGas} from "@/api";
+import {getCurrentAccount, getDelegationAmount, getFixDepositDetail, getRewardByAddress} from "@/api";
 import {useState} from "react";
 import {formatCountByDenom} from "@/api/utils";
 import {Button, message} from "antd";
@@ -22,15 +22,6 @@ const HandleStake = () => {
   const [delegationInfo, setDelegationInfo] = useState<any>({})
   const [rewards, setRewards] = useState<any>({})
   const navigator = useNavigate()
-
-  const getGasAction = useRequest(getGas, {
-    manual: true,
-    onSuccess: (res: any) => {
-      const {data = 200000} = res ?? {} 
-      
-      run({id: stakeId, gas: parseInt(`${data * 1.2}`)})
-    }
-  })
 
   useRequest(() => getCurrentAccount(), {
     ready: true,
@@ -160,14 +151,15 @@ const HandleStake = () => {
             }}>Get Reward</Button>
           }
           <Button
-              loading={loading || getGasAction.loading}
+              loading={loading}
               className={styles.unStake}
               style={{width: type === 'flexible' ? '45%' : '100%'}}
               onClick={() => {
                 if (type === 'flexible') {
                   return navigator('/unStakeFlexible', {state: {isKyc}})
                 }
-                getGasAction.run({transaction_type: 'cosmos.staking.v1beta1.MsgDoFixedWithdraw'})
+
+                run({id: stakeId})
               }}>Unstake Now</Button>
         </div>
       </Layout>

@@ -3,7 +3,7 @@ import Layout from "@/popup/components/layout";
 import {formatCountByDenom} from "@/api/utils";
 import define from "@/popup/define";
 import {useRequest} from "ahooks";
-import {getCurrentAccount, getDelegationAmount, getRewardByAddress, getGas} from "@/api";
+import {getCurrentAccount, getDelegationAmount, getRewardByAddress} from "@/api";
 import {useState} from "react";
 import {Button, InputNumber, message} from "antd";
 import {sendMsgUnDelegate} from './api'
@@ -16,16 +16,6 @@ const UnStakeFlexible = () => {
   const navigator = useNavigate()
   const {state = {}} = useLocation()
   const {isKyc} = state
-
-
-  const getGasAction = useRequest(getGas, {
-    manual: true,
-    onSuccess: (res: any) => {
-      const {data = 200000} = res ?? {} 
-
-      run({amount, validatorAddress: delegationInfo.delegation?.validator_address, isKyc, gas: parseInt(`${data * 2}`)})
-    }
-  })
   
 
   const getAccountAction = useRequest(() => getCurrentAccount(), {
@@ -92,8 +82,8 @@ const UnStakeFlexible = () => {
       <InputNumber controls={false} precision={6} value={amount} onChange={(number: any) => setAmount(number)} min={'0'}
                    max={formatCountByDenom(delegationInfo.balance?.denom || '', (isKyc ? delegationInfo.delegation?.amount : delegationInfo.delegation?.unKycAmount) || '0').amount}/>
     </div>
-    <Button loading={loading || getGasAction.loading} className={styles.unStake} onClick={() => {
-      getGasAction.run({transaction_type: ''})
+    <Button loading={loading } className={styles.unStake} onClick={() => {
+     run({amount, validatorAddress: delegationInfo.delegation?.validator_address, isKyc})
     }}>Unstake Now</Button>
   </Layout>
 }

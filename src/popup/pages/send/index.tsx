@@ -23,7 +23,7 @@ const Send = () => {
     onSuccess: (res: any) => {
       const {data = 200000} = res ?? {} 
     
-      setGas(parseInt(`${data * 1.2}`))
+      setGas(data)
     }
   })
 

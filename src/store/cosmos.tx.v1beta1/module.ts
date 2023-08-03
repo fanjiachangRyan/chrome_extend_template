@@ -21,6 +21,7 @@ import { ModeInfo_Multi as typeModeInfo_Multi} from "./types"
 import { Fee as typeFee} from "./types"
 import { Tip as typeTip} from "./types"
 import { AuxSignerData as typeAuxSignerData} from "./types"
+import {SimulateRequest} from './types/cosmos/tx/v1beta1/service'
 
 export {  };
 
@@ -54,8 +55,7 @@ interface TxClientOptions {
 export const txClient = ({ signer, prefix, addr }: TxClientOptions = { addr: "http://localhost:26657", prefix: "cosmos" }) => {
 
   return {
-		
-		
+	
 	}
 };
 
